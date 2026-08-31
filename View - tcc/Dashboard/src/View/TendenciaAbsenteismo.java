@@ -61,7 +61,7 @@ class GraphPanel extends JPanel {
     private int labelPadding = 25;
     private Color lineColor = new Color(255, 255, 255);
     private Color pointColor = new Color(255, 255, 255);
-    private Color gridColor = new Color(50, 50, 50); // Linhas de grade cinzas para melhor leitura
+    private Color gridColor = new Color(50, 50, 50);
     private static final Stroke GRAPH_STROKE = new BasicStroke(2f);
     private int pointWidth = 6;
     private int numberYDivisions = 5;
