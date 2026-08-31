@@ -1,4 +1,3 @@
-
 package View;
 
 import javax.swing.*;
@@ -10,134 +9,60 @@ public class ViewFuncionariosAtivos extends JPanel {
 
         setBackground(Color.BLACK);
 
-        setLayout(
-                new BorderLayout(20, 20)
-        );
+        setLayout(new BorderLayout(20, 20));
 
-        setBorder(
-                BorderFactory.createEmptyBorder(
-                        25, 25, 25, 40
-                )
-        );
+        setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 40));
 
-        // =========================
-        // TÍTULO
-        // =========================
+        JLabel titulo = new JLabel("FUNCIONÁRIOS ATIVOS");
 
-        JLabel titulo =
-                new JLabel(
-                        "FUNCIONÁRIOS ATIVOS"
-                );
+        titulo.setForeground(Color.WHITE);
 
-        titulo.setForeground(
-                Color.WHITE
-        );
+        titulo.setFont(new Font("Arial", Font.BOLD, 20));
 
-        titulo.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        20
-                )
-        );
+        JPanel topo = new JPanel(new BorderLayout());
 
-        JPanel topo =
-                new JPanel(
-                        new BorderLayout()
-                );
+        topo.setBackground(Color.BLACK);
 
-        topo.setBackground(
-                Color.BLACK
-        );
+        topo.add(titulo, BorderLayout.NORTH);
 
-        topo.add(
-                titulo,
-                BorderLayout.NORTH
-        );
+        JSeparator linha = new JSeparator();
 
-        JSeparator linha =
-                new JSeparator();
+        linha.setForeground(Color.WHITE);
 
-        linha.setForeground(
-                Color.WHITE
-        );
+        topo.add(linha, BorderLayout.SOUTH);
 
-        topo.add(
-                linha,
-                BorderLayout.SOUTH
-        );
+        add(topo, BorderLayout.NORTH);
 
-        add(
-                topo,
-                BorderLayout.NORTH
-        );
+       
 
-        // =========================
-        // CONTEÚDO
-        // =========================
+        JPanel centro = new JPanel(new GridBagLayout());
 
-        JPanel centro =
-                new JPanel(
-                        new GridBagLayout()
-                );
+        centro.setBackground(Color.BLACK);
 
-        centro.setBackground(
-                Color.BLACK
-        );
 
-        // Número
-        JLabel numero =
-                new JLabel("1.240");
+        JLabel numero = new JLabel("1.240");
 
-        numero.setForeground(
-                Color.WHITE
-        );
+        numero.setForeground(Color.WHITE);
 
-        numero.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        80
-                )
-        );
+        numero.setFont(new Font("Arial", Font.BOLD, 80));
 
-        // Headcount
-        JLabel headcount =
-                new JLabel(
-                        "HEADCOUNT TOTAL"
-                );
 
-        headcount.setForeground(
-                Color.LIGHT_GRAY
-        );
+        JLabel headcount = new JLabel("HEADCOUNT TOTAL");
 
-        headcount.setFont(
-                new Font(
-                        "Arial",
-                        Font.PLAIN,
-                        13
-                )
-        );
+        headcount.setForeground(Color.LIGHT_GRAY);
 
-        JPanel numeroPanel =
-                new JPanel();
+        headcount.setFont(new Font("Arial", Font.PLAIN, 13));
 
-        numeroPanel.setBackground(
-                Color.BLACK
-        );
+        JPanel numeroPanel = new JPanel();
 
-        numeroPanel.setLayout(
-                new BoxLayout(
-                        numeroPanel,
-                        BoxLayout.Y_AXIS
-                )
-        );
+        numeroPanel.setBackground(Color.BLACK);
+
+        numeroPanel.setLayout(new BoxLayout(numeroPanel, BoxLayout.Y_AXIS));
 
         numeroPanel.add(numero);
         numeroPanel.add(headcount);
 
-        GridBagConstraints gbc =
-                new GridBagConstraints();
+        GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -145,118 +70,60 @@ public class ViewFuncionariosAtivos extends JPanel {
         gbc.weightx = 0.45;
         gbc.weighty = 1;
 
-        gbc.anchor =
-                GridBagConstraints.CENTER;
+        gbc.anchor = GridBagConstraints.CENTER;
 
-        centro.add(
-                numeroPanel,
-                gbc
+        centro.add(numeroPanel, gbc);
+
+
+        JPanel informacoes = new JPanel();
+
+        informacoes.setBackground(Color.BLACK);
+
+        informacoes.setLayout(new BoxLayout(informacoes, BoxLayout.Y_AXIS));
+
+        JLabel efetivos = criarTexto("• Efetivos: 1.150 (92,7%)");
+
+        JLabel terceiros = criarTexto("• Terceirizados: 90 (7,3%)");
+
+        JLabel crescimento = criarTexto("• Crescimento Mensal: +2,1%");
+
+        JLabel descricao = criarTexto(
+                "<html>Estabilidade no quadro operacional com foco em expansão da<br>" +
+                "área técnica no próximo trimestre.</html>"
         );
 
-        // =========================
-        // INFORMAÇÕES
-        // =========================
+        informacoes.add(efetivos);
 
-        JPanel informacoes =
-                new JPanel();
+        informacoes.add(Box.createVerticalStrut(15));
 
-        informacoes.setBackground(
-                Color.BLACK
-        );
+        informacoes.add(terceiros);
 
-        informacoes.setLayout(
-                new BoxLayout(
-                        informacoes,
-                        BoxLayout.Y_AXIS
-                )
-        );
+        informacoes.add(Box.createVerticalStrut(15));
 
-        JLabel efetivos =
-                criarTexto(
-                        "• Efetivos: 1.150 (92,7%)"
-                );
+        informacoes.add(crescimento);
 
-        JLabel terceiros =
-                criarTexto(
-                        "• Terceirizados: 90 (7,3%)"
-                );
+        informacoes.add(Box.createVerticalStrut(30));
 
-        JLabel crescimento =
-                criarTexto(
-                        "• Crescimento Mensal: +2,1%"
-                );
-
-        JLabel descricao =
-                criarTexto(
-                        "<html>Estabilidade no quadro operacional com foco em expansão da<br>" +
-                        "área técnica no próximo trimestre.</html>"
-                );
-
-        informacoes.add(
-                efetivos
-        );
-
-        informacoes.add(
-                Box.createVerticalStrut(15)
-        );
-
-        informacoes.add(
-                terceiros
-        );
-
-        informacoes.add(
-                Box.createVerticalStrut(15)
-        );
-
-        informacoes.add(
-                crescimento
-        );
-
-        informacoes.add(
-                Box.createVerticalStrut(30)
-        );
-
-        informacoes.add(
-                descricao
-        );
+        informacoes.add(descricao);
 
         gbc.gridx = 1;
         gbc.weightx = 0.55;
 
-        gbc.fill =
-                GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        centro.add(
-                informacoes,
-                gbc
-        );
+        centro.add(informacoes, gbc);
 
-        add(
-                centro,
-                BorderLayout.CENTER
-        );
+        add(centro, BorderLayout.CENTER);
     }
 
-    private JLabel criarTexto(
-            String texto
-    ) {
+    private JLabel criarTexto(String texto) {
 
-        JLabel label =
-                new JLabel(texto);
+        JLabel label = new JLabel(texto);
 
-        label.setForeground(
-                Color.WHITE
-        );
+        label.setForeground(Color.WHITE);
 
-        label.setFont(
-                new Font(
-                        "Arial",
-                        Font.PLAIN,
-                        13
-                )
-        );
+        label.setFont(new Font("Arial", Font.PLAIN, 13));
 
         return label;
     }
 }
-

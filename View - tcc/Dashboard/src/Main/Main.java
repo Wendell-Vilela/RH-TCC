@@ -1,8 +1,12 @@
 package Main;
 
-import View.ViewFuncionariosAtivos;
+
 import View.ViewNovasAdmissoes;
 import View.ViewTaxaTurnover;
+import View.CustoMensal;
+import View.GestaoFerias;
+import View.TendenciaAbsenteismo;
+import View.ViewFuncionariosAtivos;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +16,7 @@ public class Main extends JFrame {
     JPanel painelPrincipal;
     CardLayout cardLayout;
 
+ 
     public Main() {
 
         setTitle("Dashboard Executivo");
@@ -32,9 +37,12 @@ public class Main extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 15, 10, 15);
 
+        JButton btnCusto = criarBotao("Custo de Pessoal");
         JButton btnFuncionarios = criarBotao("Funcionários Ativos");
         JButton btnAdmissoes = criarBotao("Novas Admissões");
         JButton btnTurnover = criarBotao("Taxa de Turnover");
+        JButton btnFerias = criarBotao("Gestão de Férias");
+        JButton btnAbsenteismo = criarBotao("Taxa de Absenteismo");
 
         gbc.gridy = 0;
         menu.add(btnFuncionarios, gbc);
@@ -45,9 +53,19 @@ public class Main extends JFrame {
         gbc.gridy = 2;
         menu.add(btnTurnover, gbc);
 
+        gbc.gridy = 3;
+        menu.add(btnCusto, gbc);
+
+        gbc.gridy = 4;
+        menu.add(btnFerias, gbc);
+
+        gbc.gridy = 5;
+        menu.add(btnAbsenteismo, gbc);
+
         add(menu, BorderLayout.WEST);
 
-        // PAINEL PRINCIPAL
+        
+
 
         cardLayout = new CardLayout();
         painelPrincipal = new JPanel(cardLayout);
@@ -68,6 +86,21 @@ public class Main extends JFrame {
                 "TURNOVER"
         );
 
+        painelPrincipal.add(
+                new CustoMensal(),
+                "CUSTO"
+        );    
+
+        painelPrincipal.add(
+                new TendenciaAbsenteismo(),
+                "ABSENTEISMO"
+        );           
+
+        painelPrincipal.add(
+                new GestaoFerias(),
+                "FERIAS"
+        ); 
+
         add(painelPrincipal, BorderLayout.CENTER);
 
         // BOTÕES
@@ -82,6 +115,18 @@ public class Main extends JFrame {
 
         btnTurnover.addActionListener(e ->
                 cardLayout.show(painelPrincipal, "TURNOVER")
+        );
+
+        btnFerias.addActionListener(e ->
+                cardLayout.show(painelPrincipal, "FERIAS")
+        );
+
+        btnAbsenteismo.addActionListener(e ->
+                cardLayout.show(painelPrincipal, "ABSENTEISMO")
+        );
+
+         btnCusto.addActionListener(e ->
+                cardLayout.show(painelPrincipal, "CUSTO")
         );
 
         cardLayout.show(painelPrincipal, "FUNCIONARIOS");

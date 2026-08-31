@@ -1,6 +1,5 @@
-package view;
+package View;
 
-public package view; 
  
 import java.awt.*; 
 import javax.swing.*; 
