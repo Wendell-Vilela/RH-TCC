@@ -57,7 +57,11 @@ public class TendenciaAbsenteismo extends JPanel {
 
 class GraphPanel extends JPanel {
  
-    private int padding = 25;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int padding = 25;
     private int labelPadding = 25;
     private Color lineColor = Color.BLACK;
     private Color pointColor = Color.BLACK;

@@ -73,6 +73,7 @@ private void montar() {
 
     progresso.setValue(65);
     progresso.setStringPainted(true);
+    progresso.setForeground(Color.BLACK);
 
     painelProgresso.add(progresso, BorderLayout.CENTER);
 

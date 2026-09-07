@@ -3,18 +3,10 @@ package view;
 import javax.swing.*;
 import javax.swing.JTabbedPane;
 
-public class TelaDashboard extends JFrame {
+public class TelaDashboard extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public TelaDashboard() {
-
-        setTitle("ERP - Gestão de Funcionários");
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        setSize(750, 600);
-
-        setLocationRelativeTo(null);
 
         // Criação das abas
         JTabbedPane abas = new JTabbedPane();

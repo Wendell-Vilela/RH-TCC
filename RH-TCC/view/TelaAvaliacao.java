@@ -1,19 +1,11 @@
-package view;
+	package view;
 
 import javax.swing.*;
 
-public class TelaAvaliacao extends JFrame {
+public class TelaAvaliacao extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public TelaAvaliacao() {
-
-        setTitle("ERP - Gestão de Funcionários");
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        setSize(750, 600);
-
-        setLocationRelativeTo(null);
 
         // Criação das abas
         JTabbedPane abas = new JTabbedPane();
@@ -35,7 +27,7 @@ public class TelaAvaliacao extends JFrame {
         );
 
         abas.addTab(
-            "Plano de Desenvolvimento Individual",
+            "PDI",
             new TelaPDI()
         );
 
