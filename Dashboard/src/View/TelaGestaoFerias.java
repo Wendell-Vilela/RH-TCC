@@ -1,25 +1,41 @@
 package View;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+import Model.GestaoFerias; 
  
-import java.awt.*; 
-import javax.swing.*; 
-import javax.swing.table.DefaultTableCellRenderer; 
-import javax.swing.table.DefaultTableModel; 
- 
-public class GestaoFerias extends JPanel { 
+public class TelaGestaoFerias extends JPanel { 
  
     /** 
 	 *  
 	 */ 
 	private static final long serialVersionUID = 1L; 
  
-    
+    private JTable tabela;
+    private DefaultTableModel modelo;
 	 
  
  
     
  
-    public GestaoFerias() { 
+    public TelaGestaoFerias() { 
         setLayout(new BorderLayout()); 
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15)); 
         setBackground(Color.WHITE); 
@@ -32,15 +48,10 @@ public class GestaoFerias extends JPanel {
  
         }; 
  
-         Object[][] dados = { 
-            {"Operações", 240, 42, 12}, 
-            {"Comercial", 110, 15, 3}, 
-            {"Financeiro", 45, 2, 0}, 
-            {"Tecnologia", 88, 8, 1} 
-        }; 
+     
  
  
-        DefaultTableModel modelo = new DefaultTableModel(dados, colunas) { 
+    modelo = new DefaultTableModel(colunas, 0) { 
  
        @Override 
         public boolean isCellEditable(int row, int column) { 
@@ -48,8 +59,8 @@ public class GestaoFerias extends JPanel {
         } 
         }; 
      
-        JTable tabela = new JTable(modelo); 
-        tabela.setBackground(Color.WHITE); 
+        tabela = new JTable(modelo); 
+        tabela.setBackground(Color.WHITE);
         tabela.setForeground(Color.BLACK); 
         
         tabela.setRowHeight(40);
@@ -114,7 +125,9 @@ public class GestaoFerias extends JPanel {
  
         montar(scrollpane); 
     } 
- 
+    
+
+    
     private void montar(JScrollPane scrollpane) { 
         JPanel formulario = new JPanel(new GridBagLayout()); 
         formulario.setBackground(Color.WHITE); 
@@ -152,24 +165,38 @@ public class GestaoFerias extends JPanel {
  
          add(formulario, BorderLayout.CENTER);; 
     } 
- 
-    private void componente( 
-        JPanel painel, 
-        GridBagConstraints g, 
-        int linha, 
-        String texto, 
-        Component campo 
-    ) { 
-        g.gridx = 0; 
-        g.gridy = linha; 
-        g.weightx = 0; 
-        g.fill = GridBagConstraints.NONE; 
-        painel.add(new JLabel(texto), g); 
- 
-        g.gridx = 1; 
-        g.weightx = 1; 
-        g.fill = GridBagConstraints.HORIZONTAL; 
-        painel.add(campo, g); 
-    } 
+    
+
+    public void AtualizarTabela(List<GestaoFerias> lista) {
+
+        modelo.setRowCount(0);
+
+        for (GestaoFerias gestaoFerias : lista) {
+            modelo.addRow(new Object[] {
+                gestaoFerias.getDepartamento(),
+                gestaoFerias.getAteDozeMeses(),
+                gestaoFerias.getDozeADezoitoMeses(),
+                gestaoFerias.getMaisDezoitoMeses()
+
+            });
+        }
+        
+    }
+
+    public JTable getTabela() {
+        return tabela;
+    }
+
+    public void setTabela(JTable tabela) {
+        this.tabela = tabela;
+    }
+
+    public DefaultTableModel getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(DefaultTableModel modelo) {
+        this.modelo = modelo;
+    }
 } 
 

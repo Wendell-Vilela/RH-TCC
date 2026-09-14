@@ -1,14 +1,13 @@
 package Main;
 
+import View.TelaCustoMensal;
+import View.TelaGestaoFerias;
+import View.TelaTendenciaAbsenteismo;
+import View.ViewFuncionariosAtivos;
 import View.ViewNovasAdmissoes;
 import View.ViewTaxaTurnover;
-import View.CustoMensal;
-import View.GestaoFerias;
-import View.TendenciaAbsenteismo;
-import View.ViewFuncionariosAtivos;
-
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class Main extends JFrame {
 
@@ -23,20 +22,20 @@ public class Main extends JFrame {
 
         JTabbedPane abas = new JTabbedPane();
         
-        // Customização opcional para combinar com o tema escuro anterior
+        
         abas.setBackground(Color.WHITE);
         abas.setForeground(Color.BLACK);
         abas.setFont(new Font("Arial", Font.BOLD, 11));
 
-        // Adicionando as telas diretamente como abas
+
         abas.addTab("Funcionários Ativos", new ViewFuncionariosAtivos());
         abas.addTab("Novas Admissões", new ViewNovasAdmissoes());
         abas.addTab("Taxa de Turnover", new ViewTaxaTurnover());
-        abas.addTab("Custo de Pessoal", new CustoMensal());
-        abas.addTab("Taxa de Absenteismo", new TendenciaAbsenteismo());
-        abas.addTab("Gestão de Férias", new GestaoFerias());
+        abas.addTab("Custo de Pessoal", new TelaCustoMensal());
+        abas.addTab("Taxa de Absenteismo", new TelaTendenciaAbsenteismo());
+        abas.addTab("Gestão de Férias", new TelaGestaoFerias());
 
-        // Adiciona o componente de abas no centro ocupando a tela toda
+
         add(abas, BorderLayout.CENTER);
     }
 

@@ -1,10 +1,19 @@
 package View;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-public class CustoMensal extends JPanel {
+import Model.CustoMensal;
+
+public class TelaCustoMensal extends JPanel {
 
     
 	private static final long serialVersionUID = 1L;
@@ -20,12 +29,32 @@ public class CustoMensal extends JPanel {
     private JLabel beneficioTotallbl;
     private JLabel beneficioTotaltxt;
 
-    public CustoMensal() {
+    public TelaCustoMensal() {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         setBackground(Color.WHITE);
         montar();
     }
+
+    public void AtualizarDados(CustoMensal custo) {
+
+        investimentoTotaltxt.setText(
+            custo.getInvestimentoTotal().toString()
+        );
+
+    salarioTotaltxt.setText(
+            custo.getSalarioTotal().toString()
+     ); 
+    
+
+    encargoTotaltxt.setText(
+            custo.getEncargoTotal().toString()
+    );
+
+    beneficioTotaltxt.setText(
+            custo.getBeneficioTotal().toString()
+    ); 
+}
 
     private void montar() {
         JPanel formulario = new JPanel(new GridBagLayout());
