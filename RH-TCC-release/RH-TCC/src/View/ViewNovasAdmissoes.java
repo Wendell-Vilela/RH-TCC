@@ -1,109 +1,90 @@
-
 package view;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.TitledBorder;
 
 public class ViewNovasAdmissoes extends JPanel {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-
-	public ViewNovasAdmissoes() {
-
-        setBackground(Color.BLACK);
+    public ViewNovasAdmissoes() {
+        setBackground(Cores.FUNDO);
         setLayout(new BorderLayout(20, 20));
-        setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 40));
 
-        // TÍTULO
+        // Borda padronizada com título
+        TitledBorder borda = BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Cores.BORDA),
+                "NOVAS ADMISSÕES",
+                TitledBorder.LEFT,
+                TitledBorder.TOP,
+                new Font("SansSerif", Font.BOLD, 14),
+                Cores.TEXTO_TITULO
+        );
 
-        JLabel titulo = new JLabel("NOVAS ADMISSÕES");
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(15, 15, 15, 15),
+                borda
+        ));
 
-        titulo.setForeground(Color.WHITE);
-        titulo.setFont(new Font("Arial", Font.BOLD, 20));
-
-        JPanel topo = new JPanel(new BorderLayout());
-        topo.setBackground(Color.BLACK);
-
-        topo.add(titulo, BorderLayout.NORTH);
-
-        JSeparator linha = new JSeparator();
-        linha.setForeground(Color.WHITE);
-
-        topo.add(linha, BorderLayout.SOUTH);
-
-        add(topo, BorderLayout.NORTH);
-
-        // GRÁFICO
-
+        // GRÁFICO DE BARRAS
         add(new GraficoBarras(), BorderLayout.CENTER);
 
         // RODAPÉ
+        JPanel rodape = new JPanel(new BorderLayout());
+        rodape.setBackground(Cores.FUNDO);
+        rodape.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel total = new JLabel(
-                "Total acumulado no período: 98 novos colaboradores."
-        );
-
-        total.setForeground(Color.GRAY);
-        total.setFont(new Font("Arial", Font.PLAIN, 11));
-
+        JLabel total = new JLabel("Total acumulado no período: 98 novos colaboradores.");
+        total.setForeground(Cores.TEXTO_TITULO);
+        total.setFont(new Font("SansSerif", Font.PLAIN, 12));
         total.setHorizontalAlignment(SwingConstants.CENTER);
 
-        add(total, BorderLayout.SOUTH);
+        rodape.add(total, BorderLayout.CENTER);
+
+        add(rodape, BorderLayout.SOUTH);
     }
 
-
-    // GRÁFICO DE BARRAS
-
+    // GRÁFICO DE BARRAS CUSTOMIZADO
     private static class GraficoBarras extends JPanel {
 
-		private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
-		public GraficoBarras() {
+        public GraficoBarras() {
+            setBackground(Cores.FUNDO);
 
-            setBackground(Color.BLACK);
+            // Ajuste de contraste para a legibilidade do texto nas barras
+            UIManager.put("ProgressBar.selectionForeground", Cores.FUNDO);
+            UIManager.put("ProgressBar.selectionBackground", Cores.TEXTO_TITULO);
 
-            UIManager.put("ProgressBar.selectionForeground", Color.BLACK);
-            UIManager.put("ProgressBar.selectionBackground", Color.WHITE);
+            setLayout(new GridLayout(4, 1, 15, 15));
 
-            setLayout(new GridLayout(4, 1, 10, 10));
+            add(criarBarra("Operações - 42 Contratações", 42, 42));
+            add(criarBarra("Vendas - 30 Contratações", 30, 42));
+            add(criarBarra("Tecnologia - 18 Contratações", 18, 42));
+            add(criarBarra("Administrativo - 8 Contratações", 8, 42));
+        }
 
-            JProgressBar barra1 = new JProgressBar(0, 42);
-            barra1.setValue(42);
-            barra1.setString("Operações - 42 Contratações");
-            barra1.setStringPainted(true);
-            barra1.setForeground(Color.WHITE);
-            barra1.setBackground(new Color(35, 35, 35));
+        private JProgressBar criarBarra(String texto, int valor, int maximo) {
+            JProgressBar barra = new JProgressBar(0, maximo);
+            barra.setValue(valor);
+            barra.setString(texto);
+            barra.setStringPainted(true);
+            barra.setFont(new Font("SansSerif", Font.BOLD, 12));
 
-            JProgressBar barra2 = new JProgressBar(0, 42);
-            barra2.setValue(30);
-            barra2.setString("Vendas - 30 Contratações");
-            barra2.setStringPainted(true);
-            barra2.setForeground(Color.WHITE);
-            barra2.setBackground(new Color(35, 35, 35));
+            // Aplicando o esquema de cores padronizado
+            barra.setForeground(Cores.TEXTO_TITULO);
+            barra.setBackground(Cores.BORDA);
+            barra.setBorder(BorderFactory.createLineBorder(Cores.BORDA, 1, true));
 
-            JProgressBar barra3 = new JProgressBar(0, 42);
-            barra3.setValue(18);
-            barra3.setString("Tecnologia - 18 Contratações");
-            barra3.setStringPainted(true);
-            barra3.setForeground(Color.WHITE);
-            barra3.setBackground(new Color(35, 35, 35));
-
-            JProgressBar barra4 = new JProgressBar(0, 42);
-            barra4.setValue(8);
-            barra4.setString("Administrativo - 8 Contratações");
-            barra4.setStringPainted(true);
-            barra4.setForeground(Color.WHITE);
-            barra4.setBackground(new Color(35, 35, 35));
-
-            add(barra1);
-            add(barra2);
-            add(barra3);
-            add(barra4);
+            return barra;
         }
     }
-        
-    }
-    
-
-
+}
