@@ -1,29 +1,24 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TendenciaAbsenteismo {
+    private int mes;
+    private double percentual;
 
-    private List<Double> scores;
-
-    public TendenciaAbsenteismo() {
-        this.scores = new ArrayList<>();
+    public int getMes() {
+        return mes;
     }
 
-    public TendenciaAbsenteismo(List<Double> scores) {
-        this.scores = scores;
+    public void setMes(int mes) {
+        this.mes = mes;
     }
 
-    public List<Double> getScores() {
-        return scores;
+    public double getPercentual() {
+        return percentual;
     }
 
-    public void setScores(List<Double> scores) {
-        this.scores = scores;
+    public void setPercentual(double percentual) {
+        this.percentual = percentual;
     }
 
-    public void adicionarScore(double score) {
-        this.scores.add(score);
-    }
+    
 }
