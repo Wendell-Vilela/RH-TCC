@@ -1,35 +1,39 @@
 package view;
 
+import java.awt.BorderLayout;
+
 import javax.swing.*;
 import javax.swing.JTabbedPane;
 
-public class TelaRelatorio extends JPanel {
+public class TelaRecrutamento extends JPanel {
     private static final long serialVersionUID = 1L;
 
-    public TelaRelatorio() {
+    public TelaRecrutamento() {
 
         // Criação das abas
         JTabbedPane abas = new JTabbedPane();
+        setLayout(new BorderLayout());
+
 
         // Adiciona cada tela do módulo
         abas.addTab(
-            "Custo e Projeções",
-            new TelaCusto()
+            "Cadastro de Candidato",
+            new TelaCadastroCandidato()
         );
 
         abas.addTab(
-            "Desempenho",
-            new TelaDesempenho()
+            "Cadastro de Vaga",
+            new TelaCadastroVaga()
         );
 
         abas.addTab(
-            "Rotatividade",
-            new TelaRotatividade()
+            "Contratação",
+            new TelaContratacao()
         );
 
         abas.addTab(
-            "Visão Geral de Indicadores",
-            new TelaVGI()
+            "Processo Seletivo",
+            new TelaProcessoSeletivo()
         );
 
 

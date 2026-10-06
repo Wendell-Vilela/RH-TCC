@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.BorderLayout;
+
 import javax.swing.*;
 import javax.swing.JTabbedPane;
 
@@ -10,21 +12,22 @@ public class TelaDashboard extends JPanel {
 
         // Criação das abas
         JTabbedPane abas = new JTabbedPane();
+        setLayout(new BorderLayout());
 
         // Adiciona cada tela do módulo
         abas.addTab(
             "Custo Mensal",
-            new CustoMensal()
+            new TelaCustoMensal()
         );
 
         abas.addTab(
             "Gestão de Férias",
-            new GestaoFerias()
+            new TelaGestaoFerias()
         );
 
         abas.addTab(
             "Tendência de Absenteísmo",
-            new TendenciaAbsenteismo()
+            new TelaTendenciaAbsenteismo()
         );
 
         abas.addTab(

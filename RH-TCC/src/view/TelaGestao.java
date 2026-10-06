@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.BorderLayout;
+
 import javax.swing.*;
 import javax.swing.JTabbedPane;
 
@@ -7,6 +9,8 @@ public class TelaGestao extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public TelaGestao() {
+        setLayout(new BorderLayout());
+
 
         // Criação das abas
         JTabbedPane abas = new JTabbedPane();

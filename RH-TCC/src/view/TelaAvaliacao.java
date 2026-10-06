@@ -1,5 +1,7 @@
 	package view;
 
+import java.awt.BorderLayout;
+
 import javax.swing.*;
 
 public class TelaAvaliacao extends JPanel {
@@ -9,6 +11,8 @@ public class TelaAvaliacao extends JPanel {
 
         // Criação das abas
         JTabbedPane abas = new JTabbedPane();
+        setLayout(new BorderLayout());
+
 
         // Adiciona cada tela do módulo
         abas.addTab(
