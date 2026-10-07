@@ -46,7 +46,7 @@ public class TelaVGI extends JPanel {
 
         JLabel lblBannerTitulo = new JLabel("Business Intelligence aplicado ao RH");
         lblBannerTitulo.setFont(new Font("Arial", Font.BOLD, 13));
-        
+
         JLabel lblBannerSub = new JLabel("Dados operacionais transformados em indicadores estratégicos.");
         lblBannerSub.setFont(new Font("Arial", Font.PLAIN, 11));
         lblBannerSub.setForeground(new Color(100, 100, 100));
@@ -62,24 +62,26 @@ public class TelaVGI extends JPanel {
         painelCentral.add(painelBanner);
         painelCentral.add(Box.createVerticalStrut(15));
 
-        // 3. Tabela de Indicadores
+        // 3. Tabela de Indicadores (Tamanho Reduzido)
         String[] colunas = {"Indicador", "Meta", "Atual", "Tendência"};
         Object[][] dados = {
-            {"Turnover", "≤ 10%", "8,4%", "↓ Melhorando"},
-            {"Absenteísmo", "≤ 3,5%", "3,1%", "↓ Melhorando"},
-            {"Desempenho médio", "≥ 80%", "82%", "↑ Melhorando"},
-            {"Custos RH", "≤ R$ 260 mil", "R$ 248 mil", "↓ Melhorando"}
+            {"Turnover", "≤ 10%", "8,4%", "↗ (Melhoria simples - Nordeste)"},
+            {"Absenteísmo", "≤ 3,5%", "3,1%", "→ (Taxa regular - Direita)"},
+            {"Desempenho médio", "≥ 80%", "82%", "↑ (Melhoria alta - Cima)"},
+            {"Custos RH", "≤ R$ 260 mil", "R$ 248 mil", "↘ (Piora boa - Sudeste)"},
+            {"Indicador Crítico", "---", "---", "↓ (Piora alta - Baixo)"}
         };
 
         JTable tabela = new JTable(dados, colunas);
-        tabela.setRowHeight(30);
-        tabela.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
-        tabela.setFont(new Font("Arial", Font.PLAIN, 12));
+        tabela.setRowHeight(24); // Linhas mais compactas
+        tabela.getTableHeader().setFont(new Font("Arial", Font.BOLD, 11));
+        tabela.setFont(new Font("Arial", Font.PLAIN, 11));
         tabela.setGridColor(new Color(230, 230, 230));
         tabela.setSelectionBackground(new Color(240, 244, 250));
 
         JScrollPane scrollTabela = new JScrollPane(tabela);
-        scrollTabela.setMaximumSize(new Dimension(Integer.MAX_VALUE, 160));
+        // Altura máxima reduzida para diminuir o tamanho geral do componente da tabela
+        scrollTabela.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
         scrollTabela.getViewport().setBackground(Color.WHITE);
         scrollTabela.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220), 1));
 
