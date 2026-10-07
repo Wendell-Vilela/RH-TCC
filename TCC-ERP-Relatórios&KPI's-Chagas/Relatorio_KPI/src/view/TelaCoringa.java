@@ -22,7 +22,6 @@ public class TelaCoringa extends JFrame {
         JTabbedPane abas = new JTabbedPane();
 
         abas.addTab("Visão Geral dos Indicadores", new TelaVGI());
-        abas.addTab("Taxa de Rotatividade", new TelaRotatividade());
         abas.addTab("Desempenho de Grupos", new TelaDesempenho());
         abas.addTab("Custos e Projeções", new TelaCusto());
 
