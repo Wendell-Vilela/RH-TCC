@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import model.TendenciaAbsenteismo;
+import model.FuncionarioAbsenteismo;
 
 public class TelaTendenciaAbsenteismo extends JPanel {
 
@@ -294,56 +295,37 @@ public class TelaTendenciaAbsenteismo extends JPanel {
     }
 
     public void atualizarTabela(
-        List<Object[]> funcionarios
-    ) {
+    	    List<FuncionarioAbsenteismo> funcionarios
+    	) {
 
-        modeloTabela.setRowCount(0);
+    	    modeloTabela.setRowCount(0);
 
-        if (funcionarios == null) {
-            return;
-        }
+    	    if (funcionarios == null) {
+    	        return;
+    	    }
 
-        for (
-            Object[] funcionario
-            : funcionarios
-        ) {
+    	    for (
+    	        FuncionarioAbsenteismo funcionario
+    	        : funcionarios
+    	    ) {
 
-            if (
-                funcionario == null ||
-                funcionario.length < 4
-            ) {
-                continue;
-            }
+    	        modeloTabela.addRow(
+    	            new Object[] {
+    	                funcionario.getId(),
+    	                funcionario.getNome(),
+    	                funcionario.getFaltas(),
+    	                String.format(
+    	                    Locale.US,
+    	                    "%.2f%%",
+    	                    funcionario.getTaxaAbs()
+    	                )
+    	            }
+    	        );
+    	    }
 
-            Object taxa =
-                funcionario[3];
-
-            if (taxa instanceof Number) {
-
-                double valor =
-                    ((Number) taxa).doubleValue();
-
-                taxa =
-                    String.format(
-                        Locale.US,
-                        "%.2f%%",
-                        valor
-                    );
-            }
-
-            modeloTabela.addRow(
-                new Object[] {
-                    funcionario[0],
-                    funcionario[1],
-                    funcionario[2],
-                    taxa
-                }
-            );
-        }
-
-        tabela.revalidate();
-        tabela.repaint();
-    }
+    	    tabela.revalidate();
+    	    tabela.repaint();
+    	}
 
     public void limparTabela() {
         modeloTabela.setRowCount(0);
