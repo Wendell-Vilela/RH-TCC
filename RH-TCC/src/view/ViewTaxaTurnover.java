@@ -1,8 +1,6 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,8 +10,6 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.RenderingHints;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -27,28 +23,32 @@ public class ViewTaxaTurnover extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    // Cores Monocromáticas
-    private static final Color COR_FUNDO = Color.WHITE;
-    private static final Color COR_TEXTO = Color.BLACK;
-    private static final Color COR_SUBTEXTO = Color.DARK_GRAY;
-    private static final Color COR_BORDA = Color.GRAY;
+    // Componentes para Injeção Dinâmica de Dados pelo Controller
+    private JLabel lblTurnoverGlobal;
+    private JLabel lblSaidasVoluntarias;
+    private JLabel lblSaidasInvoluntarias;
+    private JLabel lblEstabilidade;
+    private JLabel lblAvisoRodape;
+
+    private DefaultTableModel modelTabela;
+    private JTable tabelaSetores;
+    private GraficoPizza graficoPizza;
 
     public ViewTaxaTurnover() {
-        setBackground(COR_FUNDO);
         setLayout(new BorderLayout(15, 15));
 
-        TitledBorder bordaPrincipal = BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(COR_BORDA),
+        // Borda principal padronizada com Look & Feel do sistema
+        TitledBorder borda = BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(),
                 "ANÁLISE DA TAXA DE TURNOVER",
                 TitledBorder.LEFT,
                 TitledBorder.TOP,
-                new Font("SansSerif", Font.BOLD, 14),
-                COR_TEXTO
+                new Font("SansSerif", Font.BOLD, 14)
         );
 
         setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(15, 15, 15, 15),
-                bordaPrincipal
+                BorderFactory.createEmptyBorder(10, 10, 10, 10),
+                borda
         ));
 
         add(criarConteudoCentro(), BorderLayout.CENTER);
@@ -56,198 +56,213 @@ public class ViewTaxaTurnover extends JPanel {
 
     private JPanel criarConteudoCentro() {
         JPanel centro = new JPanel(new GridBagLayout());
-        centro.setBackground(COR_FUNDO);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
 
-        // Cards Superiores
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.weighty = 0.15;
-        gbc.insets = new Insets(0, 0, 15, 0);
+        // 1. CARDS SUPERIORES (Métricas Globais)
+        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridwidth = 2; gbc.weighty = 0.15;
+        gbc.insets = new Insets(5, 5, 10, 5);
         centro.add(criarCardsIndicadores(), gbc);
 
-        // Gráfico de Pizza (Esquerda)
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0.5;
+        // 2. GRÁFICO DE ROSCA / PIZZA (Lado Esquerdo)
+        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridwidth = 1; gbc.weightx = 0.4;
         gbc.weighty = 0.85;
-        gbc.insets = new Insets(0, 0, 0, 10);
+        gbc.insets = new Insets(0, 5, 5, 5);
         centro.add(criarCardGrafico(), gbc);
 
-        // Tabela por Setor (Direita)
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.weightx = 0.5;
-        gbc.insets = new Insets(0, 10, 0, 0);
+        // 3. TABELA DETALHADA POR SETOR (Lado Direito)
+        gbc.gridx = 1; gbc.gridy = 1;
+        gbc.weightx = 0.6;
+        gbc.insets = new Insets(0, 5, 5, 5);
         centro.add(criarCardDetalhamentoSetores(), gbc);
 
         return centro;
     }
 
     private JPanel criarCardsIndicadores() {
-        JPanel painelCards = new JPanel(new GridLayout(1, 4, 15, 0));
-        painelCards.setBackground(COR_FUNDO);
+        JPanel painelCards = new JPanel(new GridLayout(1, 4, 10, 0));
 
-        painelCards.add(cardMetrica("Taxa Global Turnover", "4.0%", "Dentro da meta (< 5%)"));
-        painelCards.add(cardMetrica("Saídas Voluntárias", "1.2%", "2 colaboradores este mês"));
-        painelCards.add(cardMetrica("Saídas Involuntárias", "2.8%", "4 colaboradores este mês"));
-        painelCards.add(cardMetrica("Índice de Estabilidade", "96.0%", "142 mantidos no quadro"));
+        lblTurnoverGlobal = new JLabel("0.0%", SwingConstants.LEFT);
+        lblSaidasVoluntarias = new JLabel("0", SwingConstants.LEFT);
+        lblSaidasInvoluntarias = new JLabel("0", SwingConstants.LEFT);
+        lblEstabilidade = new JLabel("0.0%", SwingConstants.LEFT);
+
+        painelCards.add(cardMetrica("Taxa Global Turnover", lblTurnoverGlobal, "No período selecionado"));
+        painelCards.add(cardMetrica("Saídas Voluntárias", lblSaidasVoluntarias, "Iniciativa do colaborador"));
+        painelCards.add(cardMetrica("Saídas Involuntárias", lblSaidasInvoluntarias, "Iniciativa da empresa"));
+        painelCards.add(cardMetrica("Índice de Estabilidade", lblEstabilidade, "Retenção no período"));
 
         return painelCards;
     }
 
-    private JPanel cardMetrica(String titulo, String valor, String subtitulo) {
+    private JPanel cardMetrica(String titulo, JLabel valorLabel, String subtitulo) {
         JPanel card = new JPanel(new GridLayout(2, 1, 0, 2));
-        card.setBackground(COR_FUNDO);
         card.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(COR_BORDA),
+                BorderFactory.createEtchedBorder(),
                 titulo,
                 TitledBorder.LEFT,
                 TitledBorder.TOP,
-                new Font("SansSerif", Font.PLAIN, 11),
-                COR_SUBTEXTO
+                new Font("SansSerif", Font.PLAIN, 11)
         ));
 
-        JLabel v = new JLabel(valor);
-        v.setFont(new Font("SansSerif", Font.BOLD, 18));
-        v.setForeground(COR_TEXTO);
+        valorLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
 
         JLabel sub = new JLabel(subtitulo);
-        sub.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        sub.setForeground(COR_SUBTEXTO);
+        sub.setFont(new Font("SansSerif", Font.ITALIC, 10));
 
-        card.add(v);
+        card.add(valorLabel);
         card.add(sub);
-
         return card;
     }
 
     private JPanel criarCardGrafico() {
-        JPanel card = new JPanel(new BorderLayout(15, 15));
-        card.setBackground(COR_FUNDO);
+        JPanel card = new JPanel(new BorderLayout(5, 5));
         card.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(COR_BORDA),
-                "Distribuição Percentual de Rotatividade",
+                BorderFactory.createEtchedBorder(),
+                "Distribuição de Saídas e Retenção",
                 TitledBorder.LEFT,
                 TitledBorder.TOP,
-                new Font("SansSerif", Font.BOLD, 12),
-                COR_TEXTO
+                new Font("SansSerif", Font.BOLD, 12)
         ));
 
-        JPanel containerGrafico = new JPanel(new GridLayout(1, 2, 10, 0));
-        containerGrafico.setBackground(COR_FUNDO);
+        graficoPizza = new GraficoPizza();
+        lblAvisoRodape = new JLabel("Aguardando carregamento de dados...", SwingConstants.CENTER);
+        lblAvisoRodape.setFont(new Font("SansSerif", Font.ITALIC, 11));
 
-        containerGrafico.add(new GraficoPizza());
-        containerGrafico.add(criarPainelLegenda());
-
-        JLabel rodape = new JLabel("Aviso: Monitoramento ativo em Vendas devido ao pico de saídas voluntárias.");
-        rodape.setFont(new Font("SansSerif", Font.ITALIC, 11));
-        rodape.setForeground(COR_SUBTEXTO);
-
-        card.add(containerGrafico, BorderLayout.CENTER);
-        card.add(rodape, BorderLayout.SOUTH);
+        card.add(graficoPizza, BorderLayout.CENTER);
+        card.add(lblAvisoRodape, BorderLayout.SOUTH);
 
         return card;
-    }
-
-    private JPanel criarPainelLegenda() {
-        JPanel legenda = new JPanel();
-        legenda.setBackground(COR_FUNDO);
-        legenda.setLayout(new BoxLayout(legenda, BoxLayout.Y_AXIS));
-
-        legenda.add(Box.createVerticalGlue());
-        legenda.add(criarItemLegenda("■ Voluntário (1.2%)", Color.GRAY));
-        legenda.add(Box.createVerticalStrut(15));
-        legenda.add(criarItemLegenda("■ Involuntário (2.8%)", Color.DARK_GRAY));
-        legenda.add(Box.createVerticalStrut(15));
-        legenda.add(criarItemLegenda("■ Estabilidade (96.0%)", Color.LIGHT_GRAY));
-        legenda.add(Box.createVerticalGlue());
-
-        return legenda;
-    }
-
-    private JLabel criarItemLegenda(String texto, Color corTom) {
-        JLabel label = new JLabel(texto);
-        label.setForeground(corTom);
-        label.setFont(new Font("SansSerif", Font.BOLD, 13));
-        return label;
     }
 
     private JPanel criarCardDetalhamentoSetores() {
-        JPanel card = new JPanel(new BorderLayout(10, 10));
-        card.setBackground(COR_FUNDO);
+        JPanel card = new JPanel(new BorderLayout());
         card.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(COR_BORDA),
+                BorderFactory.createEtchedBorder(),
                 "Turnover Detalhado por Departamento",
                 TitledBorder.LEFT,
                 TitledBorder.TOP,
-                new Font("SansSerif", Font.BOLD, 12),
-                COR_TEXTO
+                new Font("SansSerif", Font.BOLD, 12)
         ));
 
-        String[] colunas = {"Departamento", "Colaboradores", "Desligamentos", "Taxa Setor"};
-        Object[][] dados = {
-            {"Comercial / Vendas", "35", "3", "8.5%"},
-            {"Tecnologia (TI)", "28", "2", "7.1%"},
-            {"Operações / Logística", "50", "1", "2.0%"},
-            {"Recursos Humanos", "15", "0", "0.0%"},
-            {"Financeiro", "20", "0", "0.0%"}
-        };
-
-        DefaultTableModel model = new DefaultTableModel(dados, colunas) {
+        // Cobertura completa de colunas para auditoria do setor
+        String[] colunas = {"Departamento", "Colaboradores", "Voluntárias", "Involuntárias", "Taxa Setor (%)"};
+        
+        modelTabela = new DefaultTableModel(colunas, 0) {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public boolean isCellEditable(int row, int col) { 
-                return false; 
+            public boolean isCellEditable(int row, int col) {
+                return false; // Somente leitura
             }
         };
 
-        JTable tabela = new JTable(model);
-        funcaoFacilitar.estilizarTabela(tabela);
+        tabelaSetores = new JTable(modelTabela);
+        tabelaSetores.setFillsViewportHeight(true);
+        tabelaSetores.setRowHeight(24);
+        tabelaSetores.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 11));
+        
+        // Renderizador centralizado para valores numéricos
+        DefaultTableCellRenderer rendererCentralizado = new DefaultTableCellRenderer();
+        rendererCentralizado.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 1; i < colunas.length; i++) {
+            tabelaSetores.getColumnModel().getColumn(i).setCellRenderer(rendererCentralizado);
+        }
 
-        // Renderizador centralizado e estilizado em preto e branco
-        tabela.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public Component getTableCellRendererComponent(JTable t, Object v, boolean isSel, boolean hasFocus, int r, int c) {
-                JLabel l = (JLabel) super.getTableCellRendererComponent(t, v, isSel, hasFocus, r, c);
-                l.setHorizontalAlignment(SwingConstants.CENTER);
-                l.setForeground(COR_TEXTO);
-
-                String valor = (String) v;
-                if (valor != null && (valor.startsWith("8") || valor.startsWith("7"))) {
-                    l.setFont(new Font("SansSerif", Font.BOLD, 12));
-                } else {
-                    l.setFont(new Font("SansSerif", Font.PLAIN, 12));
-                }
-                return l;
-            }
-        });
-
-        JScrollPane sp = new JScrollPane(tabela);
-        sp.setBackground(COR_FUNDO);
-        sp.getViewport().setBackground(COR_FUNDO);
-        sp.setBorder(BorderFactory.createLineBorder(COR_BORDA, 1));
+        JScrollPane sp = new JScrollPane(tabelaSetores);
+        sp.setBorder(BorderFactory.createEtchedBorder());
 
         card.add(sp, BorderLayout.CENTER);
-
         return card;
     }
 
-    // Gráfico de Pizza Monocromático
-    private class GraficoPizza extends JPanel {
+    // --- MÉTODOS PÚBLICOS PARA O CONTROLLER INJETAR DADOS REAIS ---
 
+    public void atualizarMetrics(String turnoverGlobal, String voluntarias, String involuntarias, String estabilidade) {
+        lblTurnoverGlobal.setText(turnoverGlobal);
+        lblSaidasVoluntarias.setText(voluntarias);
+        lblSaidasInvoluntarias.setText(involuntarias);
+        lblEstabilidade.setText(estabilidade);
+    }
+
+    public void atualizarAvisoRodape(String texto) {
+        lblAvisoRodape.setText(texto);
+    }
+
+    public void limparTabela() {
+        modelTabela.setRowCount(0);
+    }
+
+    public void adicionarLinhaTabela(Object[] linha) {
+        modelTabela.addRow(linha);
+    }
+
+    public void atualizarGrafico(double pctVoluntarias, double pctInvoluntarias, double pctEstabilidade) {
+        graficoPizza.setDados(pctVoluntarias, pctInvoluntarias, pctEstabilidade);
+    }
+
+    // --- GETTERS MANTIDOS PARA O CONTROLLER ---
+
+    public JLabel getLabelTurnoverGlobal() {
+        return lblTurnoverGlobal;
+    }
+
+    public JLabel getLabelSaidasVoluntarias() {
+        return lblSaidasVoluntarias;
+    }
+
+    public JLabel getLabelSaidasInvoluntarias() {
+        return lblSaidasInvoluntarias;
+    }
+
+    public JLabel getLabelEstabilidade() {
+        return lblEstabilidade;
+    }
+
+    public GraficoPizza getGraficoRosca() {
+        return graficoPizza;
+    }
+
+    public JTable getTabelaSetores() {
+        return tabelaSetores;
+    }
+
+    public DefaultTableModel getModelTabela() {
+        return modelTabela;
+    }
+
+    public void exibirMensagemErro(String mensagem) {
+        lblAvisoRodape.setText(mensagem);
+    }
+
+    // --- COMPONENTE DO GRÁFICO DINÂMICO ---
+
+    public class GraficoPizza extends JPanel {
         private static final long serialVersionUID = 1L;
 
+        private double pctVoluntarias = 0.0;
+        private double pctInvoluntarias = 0.0;
+        private double pctEstabilidade = 100.0;
+
         public GraficoPizza() {
-            setBackground(COR_FUNDO);
+            setOpaque(false);
+        }
+
+        public void setPercentualTurnover(double percentual) {
+            this.pctVoluntarias = percentual;
+            this.pctEstabilidade = 100.0 - percentual;
+            repaint();
+        }
+
+        public void setDados(double pctVol, double pctInvol, double pctEst) {
+            this.pctVoluntarias = pctVol;
+            this.pctInvoluntarias = pctInvol;
+            this.pctEstabilidade = pctEst;
+            repaint();
         }
 
         @Override
@@ -257,29 +272,31 @@ public class ViewTaxaTurnover extends JPanel {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            int largura = getWidth();
-            int altura = getHeight();
-            int tamanho = Math.min(largura, altura) - 20;
-
-            int x = (largura - tamanho) / 2;
-            int y = (altura - tamanho) / 2;
-
+            int tamanho = Math.min(getWidth(), getHeight()) - 20;
             if (tamanho <= 0) return;
 
-            // 1. Estabilidade (96.0% -> Tons Claros)
-            g2d.setColor(Color.LIGHT_GRAY);
-            g2d.fillArc(x, y, tamanho, tamanho, 90, 346);
+            int x = (getWidth() - tamanho) / 2;
+            int y = (getHeight() - tamanho) / 2;
 
-            // 2. Involuntário (2.8% -> Tons Escuros)
-            g2d.setColor(Color.DARK_GRAY);
-            g2d.fillArc(x, y, tamanho, tamanho, 76, 14);
+            int anguloVol = (int) Math.round((pctVoluntarias / 100.0) * 360);
+            int anguloInvol = (int) Math.round((pctInvoluntarias / 100.0) * 360);
+            int anguloEst = 360 - (anguloVol + anguloInvol);
 
-            // 3. Voluntário (1.2% -> Cinza Médio)
-            g2d.setColor(Color.GRAY);
-            g2d.fillArc(x, y, tamanho, tamanho, 72, 4);
+            int anguloAtual = 90;
 
-            // Contorno do gráfico para melhor separação das seções
-            g2d.setColor(Color.BLACK);
+            // Usa cores adaptáveis do componente/plataforma para renderizar os arcos
+            g2d.setColor(getForeground().brighter());
+            g2d.fillArc(x, y, tamanho, tamanho, anguloAtual, anguloEst);
+            anguloAtual += anguloEst;
+
+            g2d.setColor(getForeground().darker());
+            g2d.fillArc(x, y, tamanho, tamanho, anguloAtual, anguloInvol);
+            anguloAtual += anguloInvol;
+
+            g2d.setColor(getForeground());
+            g2d.fillArc(x, y, tamanho, tamanho, anguloAtual, anguloVol);
+
+            // Borda suave do gráfico
             g2d.drawOval(x, y, tamanho, tamanho);
         }
     }
