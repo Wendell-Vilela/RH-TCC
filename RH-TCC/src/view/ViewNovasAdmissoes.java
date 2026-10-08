@@ -142,16 +142,9 @@ public class ViewNovasAdmissoes extends JPanel {
         return tabelaAdmissoes;
     }
 
-    /**
-     * Limpa as barras do gráfico antes de redesenhá-lo com dados novos.
-     */
     public void limparGraficoBarras() {
         painelGraficoBarras.removeAll();
     }
-
-    /**
-     * Adiciona uma barra vertical dinâmica ao gráfico.
-     */
     public void adicionarBarraGrafico(String nomeSetor, int valorAdmissoes, int percentualPreenchimento) {
         JPanel coluna = new JPanel(new BorderLayout(0, 5));
 
@@ -170,24 +163,14 @@ public class ViewNovasAdmissoes extends JPanel {
         painelGraficoBarras.add(coluna);
     }
 
-    /**
-     * Atualiza o layout do painel de gráfico após adicionar as barras do Controller.
-     */
     public void revalidarEAtualizarGrafico() {
         painelGraficoBarras.revalidate();
         painelGraficoBarras.repaint();
     }
 
-    /**
-     * Limpa a tabela de admissões.
-     */
     public void limparTabela() {
         modelTabela.setRowCount(0);
     }
-
-    /**
-     * Injeta uma nova linha de admissão na tabela.
-     */
     public void adicionarLinhaTabela(Object[] dadosLinha) {
         modelTabela.addRow(dadosLinha);
     }
