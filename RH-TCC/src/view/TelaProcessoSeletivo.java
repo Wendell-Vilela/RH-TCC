@@ -2,6 +2,7 @@ package view;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class TelaProcessoSeletivo extends JPanel {
 
@@ -13,6 +14,8 @@ public class TelaProcessoSeletivo extends JPanel {
     private final JTextField candidato = new JTextField(60);
     private final JTextField vaga = new JTextField(30);
     private final JTextField recrutador = new JTextField(60);
+    
+    private final JTable tabelaSelecao = new JTable();
 
     private final JComboBox<String> etapaAtual = new JComboBox<>(
         new String[]{"Selecione a etapa", "Triagem", "Entrevista", "Teste", "Entrevista Final"}
@@ -31,7 +34,7 @@ public class TelaProcessoSeletivo extends JPanel {
     private void montar() {
         JPanel formulario = new JPanel(new GridBagLayout());
         formulario.setBorder(
-            BorderFactory.createTitledBorder("Cadastro de Vaga")
+            BorderFactory.createTitledBorder("Processo Seletivo")
         );
 
         GridBagConstraints g = new GridBagConstraints();
@@ -45,18 +48,50 @@ public class TelaProcessoSeletivo extends JPanel {
         componente(formulario, g, 5, "Status:", status);
 
         id.setEditable(false);
+        
+        String[] colunas = {
+                "Código",
+                "Candidato",
+                "Vaga",
+                "Recrutador",
+                "Etapa Atual",
+                "Status"
+            };
+
+            DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+
+            tabelaSelecao.setModel(modelo);
+            tabelaSelecao.setRowHeight(20);
+
+            tabelaSelecao.getColumnModel().getColumn(0).setPreferredWidth(50);
+            tabelaSelecao.getColumnModel().getColumn(1).setPreferredWidth(150);
+            tabelaSelecao.getColumnModel().getColumn(2).setPreferredWidth(100);
+            tabelaSelecao.getColumnModel().getColumn(3).setPreferredWidth(100);
+            tabelaSelecao.getColumnModel().getColumn(4).setPreferredWidth(100);
+            tabelaSelecao.getColumnModel().getColumn(5).setPreferredWidth(100);
+
+            JScrollPane scrollTabela = new JScrollPane(tabelaSelecao);
+
+            JPanel painelSelecao = new JPanel(new BorderLayout());
+
+            painelSelecao.setBorder(
+                BorderFactory.createTitledBorder("Candidatos no Processo Seletivo")
+            );
+
+            painelSelecao.add(scrollTabela, BorderLayout.CENTER);
 
         JPanel botoes = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        botoes.add(new JButton("Novo"));
-        botoes.add(new JButton("Salvar"));
+        botoes.add(new JButton("Salvar"));        
+        botoes.add(new JButton("Atualizar"));
         botoes.add(new JButton("Excluir"));
         botoes.add(new JButton("Limpar"));
 
         JPanel conteudo = new JPanel(new BorderLayout());
         conteudo.add(formulario, BorderLayout.NORTH);
+        conteudo.add(painelSelecao, BorderLayout.CENTER);
         conteudo.add(botoes, BorderLayout.SOUTH);
 
-        add(conteudo, BorderLayout.NORTH);
+        add(conteudo, BorderLayout.CENTER);
     }
 
     private void componente(
