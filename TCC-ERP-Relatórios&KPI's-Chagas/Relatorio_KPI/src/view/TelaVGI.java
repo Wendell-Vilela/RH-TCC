@@ -3,29 +3,33 @@ package view;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class TelaVGI extends JPanel {
 
     public TelaVGI() {
         setLayout(new BorderLayout(10, 15));
-        setBorder(new EmptyBorder(20, 20, 20, 20));
-        setBackground(new Color(245, 246, 248));
+        
+        setOpaque(false);
+        setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 204, 210), 1),
+            new EmptyBorder(20, 20, 20, 20)
+        ));
 
-        // Cabeçalho
-        JLabel lblTitulo = new JLabel("MÓDULO I: VISÃO GERAL DE INDICADORES");
+        JLabel lblTitulo = new JLabel("VISÃO GERAL DE INDICADORES");
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
         lblTitulo.setForeground(new Color(30, 30, 30));
         add(lblTitulo, BorderLayout.NORTH);
 
-        // Painel Central para Cards e Tabela
         JPanel painelCentral = new JPanel();
         painelCentral.setLayout(new BoxLayout(painelCentral, BoxLayout.Y_AXIS));
         painelCentral.setOpaque(false);
 
-        // 1. Linha dos Cards (4 indicadores)
+        // 1. Linha dos Cards
         JPanel painelCards = new JPanel(new GridLayout(1, 4, 15, 0));
         painelCards.setOpaque(false);
         painelCards.setMaximumSize(new Dimension(Integer.MAX_VALUE, 110));
+        painelCards.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         painelCards.add(criarCard("Turnover", "8,4%"));
         painelCards.add(criarCard("Absenteísmo", "3,1%"));
@@ -35,14 +39,15 @@ public class TelaVGI extends JPanel {
         painelCentral.add(painelCards);
         painelCentral.add(Box.createVerticalStrut(15));
 
-        // 2. Banner Informativo (Business Intelligence)
+        // 2. Banner Informativo
         JPanel painelBanner = new JPanel(new BorderLayout(15, 0));
-        painelBanner.setBackground(Color.WHITE);
+        painelBanner.setOpaque(false);
         painelBanner.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(220, 220, 220), 1, true),
+            BorderFactory.createLineBorder(new Color(200, 204, 210), 1, true),
             new EmptyBorder(12, 15, 12, 15)
         ));
         painelBanner.setMaximumSize(new Dimension(Integer.MAX_VALUE, 65));
+        painelBanner.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel lblBannerTitulo = new JLabel("Business Intelligence aplicado ao RH");
         lblBannerTitulo.setFont(new Font("Arial", Font.BOLD, 13));
@@ -62,28 +67,38 @@ public class TelaVGI extends JPanel {
         painelCentral.add(painelBanner);
         painelCentral.add(Box.createVerticalStrut(15));
 
-        // 3. Tabela de Indicadores (Tamanho Reduzido)
+        // 3. Tabela de Indicadores (Não editável)
         String[] colunas = {"Indicador", "Meta", "Atual", "Tendência"};
         Object[][] dados = {
-            {"Turnover", "≤ 10%", "8,4%", "↗ (Melhoria simples - Nordeste)"},
-            {"Absenteísmo", "≤ 3,5%", "3,1%", "→ (Taxa regular - Direita)"},
-            {"Desempenho médio", "≥ 80%", "82%", "↑ (Melhoria alta - Cima)"},
-            {"Custos RH", "≤ R$ 260 mil", "R$ 248 mil", "↘ (Piora boa - Sudeste)"},
-            {"Indicador Crítico", "---", "---", "↓ (Piora alta - Baixo)"}
+            {"Turnover", "≤ 10%", "8,4%", "Melhoria ↑"},
+            {"Absenteísmo", "≤ 3,5%", "3,1%", "Regular →"},
+            {"Desempenho médio", "≥ 80%", "82%", "Melhoria ↑"},
+            {"Custos RH", "≤ R$ 260 mil", "R$ 248 mil", "Piora ↓"},
         };
 
-        JTable tabela = new JTable(dados, colunas);
-        tabela.setRowHeight(24); // Linhas mais compactas
+        DefaultTableModel modeloTabela = new DefaultTableModel(dados, colunas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Torna todas as células não editáveis
+            }
+        };
+
+        JTable tabela = new JTable(modeloTabela);
+        tabela.setRowHeight(24);
         tabela.getTableHeader().setFont(new Font("Arial", Font.BOLD, 11));
         tabela.setFont(new Font("Arial", Font.PLAIN, 11));
-        tabela.setGridColor(new Color(230, 230, 230));
-        tabela.setSelectionBackground(new Color(240, 244, 250));
+        tabela.setGridColor(new Color(220, 220, 220));
+        tabela.setSelectionBackground(new Color(220, 235, 252));
+        tabela.setSelectionForeground(Color.BLACK);
+        tabela.setOpaque(false);
+        tabela.setBackground(new Color(0, 0, 0, 0));
 
         JScrollPane scrollTabela = new JScrollPane(tabela);
-        // Altura máxima reduzida para diminuir o tamanho geral do componente da tabela
-        scrollTabela.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
-        scrollTabela.getViewport().setBackground(Color.WHITE);
-        scrollTabela.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220), 1));
+        scrollTabela.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
+        scrollTabela.setAlignmentX(Component.LEFT_ALIGNMENT);
+        scrollTabela.getViewport().setOpaque(false);
+        scrollTabela.setOpaque(false);
+        scrollTabela.setBorder(BorderFactory.createLineBorder(new Color(200, 204, 210), 1));
 
         painelCentral.add(scrollTabela);
 
@@ -93,9 +108,9 @@ public class TelaVGI extends JPanel {
     private JPanel criarCard(String titulo, String valor) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBackground(Color.WHITE);
+        card.setOpaque(false);
         card.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(220, 220, 220), 1, true),
+            BorderFactory.createLineBorder(new Color(200, 204, 210), 1, true),
             new EmptyBorder(12, 12, 12, 12)
         ));
 
