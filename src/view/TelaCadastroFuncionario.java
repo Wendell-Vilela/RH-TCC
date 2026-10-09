@@ -1,9 +1,12 @@
+
 package view;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -25,1372 +28,707 @@ import javax.swing.JTable;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.text.MaskFormatter;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.MaskFormatter;
 
 import controller.CadastroFuncionarioController;
+import model.CadastroFuncionario;
+import model.Dependentes;
+import model.Historico;
 
 public class TelaCadastroFuncionario extends JPanel {
 
     private static final long serialVersionUID = 1L;
+    private static final int LARGURA_ROTULO = 190;
 
-    private final JTextField id =
-            new JTextField(25);
+    private final JTextField id = new JTextField(25);
+    private final JTextField nome = new JTextField(30);
+    private final JTextField matricula = new JTextField(25);
+    private final JTextField cargo = new JTextField(30);
+    private final JTextField departamento = new JTextField(30);
+    private final JTextField email = new JTextField(30);
+    private final JTextField telefone = new JTextField(25);
 
-    private final JTextField nome =
-            new JTextField(30);
+    private final JComboBox<String> status = new JComboBox<>(new String[]{
+        "Selecione o status", "Ativo", "Afastado", "Ferias", "Desligado"
+    });
 
-    private final JTextField matricula =
-            new JTextField(25);
+    private final JFormattedTextField nascimento = criarCampoData();
 
-    private final JTextField cargo =
-            new JTextField(30);
+    private final JComboBox<String> estadoCivil = new JComboBox<>(new String[]{
+        "Selecione", "Solteiro", "Casado", "Divorciado", "Viuvo"
+    });
 
-    private final JTextField departamento =
-            new JTextField(30);
+    private final JTextField naturalidade = new JTextField(30);
 
-    private final JTextField email =
-            new JTextField(30);
+    private final JComboBox<String> nacionalidade = new JComboBox<>(new String[]{
+        "Selecione", "Brasil", "Argentina", "França", "Uruguai"
+    });
 
-    private final JTextField telefone =
-            new JTextField(25);
+    private final JTextField endereco = new JTextField(35);
+    private final JTextField cidade = new JTextField(30);
 
-    private final JComboBox<String> status =
-            new JComboBox<>(new String[] {
-                    "Selecione o status",
-                    "Ativo",
-                    "Afastado",
-                    "Ferias",
-                    "Desligado"
-            });
+    private final JTextField banco = new JTextField(30);
+    private final JTextField codigoBanco = new JTextField(20);
+    private final JTextField agencia = new JTextField(20);
+    private final JTextField conta = new JTextField(25);
 
-    private final JFormattedTextField nascimento =
-            criarCampoData();
+    private final JComboBox<String> tipoConta = new JComboBox<>(new String[]{
+        "Selecione", "Conta Corrente", "Conta Poupanca", "Conta Salario"
+    });
 
-    private final JComboBox<String> estadoCivil =
-            new JComboBox<>(new String[] {
-                    "Selecione",
-                    "Solteiro",
-                    "Casado",
-                    "Divorciado",
-                    "Viuvo"
-            });
+    private final JTextField pix = new JTextField(30);
 
-    private final JTextField naturalidade =
-            new JTextField(30);
+    private final JTextField cpf = new JTextField(25);
+    private final JTextField rg = new JTextField(25);
+    private final JTextField passaporte = new JTextField(25);
+    private final JFormattedTextField validadePassaporte = criarCampoData();
+    private final JTextField pis = new JTextField(25);
+    private final JTextField ctps = new JTextField(25);
 
-    private final JComboBox<String> nacionalidade =
-            new JComboBox<>(new String[] {
-                    "Selecione",
-                    "Brasil",
-                    "Argentina",
-                    "França",
-                    "Uruguai"
-            });
-
-    private final JTextField endereco =
-            new JTextField(35);
-
-    private final JTextField cidade =
-            new JTextField(30);
-
-    private final JTextField banco =
-            new JTextField(30);
-
-    private final JTextField codigoBanco =
-            new JTextField(20);
-
-    private final JTextField agencia =
-            new JTextField(20);
-
-    private final JTextField conta =
-            new JTextField(25);
-
-    private final JComboBox<String> tipoConta =
-            new JComboBox<>(new String[] {
-                    "Selecione",
-                    "Conta Corrente",
-                    "Conta Poupanca",
-                    "Conta Salario"
-            });
-
-    private final JTextField pix =
-            new JTextField(30);
-
-    private final JTextField cpf =
-            new JTextField(25);
-
-    private final JTextField rg =
-            new JTextField(25);
-
-    private final JTextField passaporte =
-            new JTextField(25);
-
-    private final JFormattedTextField validadePassaporte =
-            criarCampoData();
-
-    private final JTextField pis =
-            new JTextField(25);
-
-    private final JTextField ctps =
-            new JTextField(25);
-
-    private final JTextField dependenteNome =
-            new JTextField(30);
+    private final JTextField dependenteNome = new JTextField(30);
 
     private final JComboBox<String> dependenteParentesco =
-            new JComboBox<>(new String[] {
-                    "Selecione",
-                    "Conjuge",
-                    "Filho",
-                    "Filha",
-                    "Pai",
-                    "Mae",
-                    "Outro"
-            });
+        new JComboBox<>(new String[]{
+            "Selecione", "Conjuge", "Filho", "Filha", "Pai", "Mae", "Outro"
+        });
 
-    private final JFormattedTextField dependenteNascimento =
-            criarCampoData();
+    private final JFormattedTextField dependenteNascimento = criarCampoData();
+    private final JTextField dependenteAssistencia = new JTextField(30);
 
-    private final JTextField dependenteAssistencia =
-            new JTextField(30);
+    private final DefaultTableModel dependentesModelo = new DefaultTableModel(
+        new String[]{"Nome", "Parentesco", "Nascimento", "Assistência"}, 0
+    ) {
+        private static final long serialVersionUID = 1L;
 
-    private final DefaultTableModel dependentesModelo =
-            new DefaultTableModel(
-                    new String[] {
-                            "Nome",
-                            "Parentesco",
-                            "Nascimento",
-                            "Assistencia"
-                    },
-                    0
-            ) {
-                private static final long serialVersionUID = 1L;
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
 
-                @Override
-                public boolean isCellEditable(
-                        int row,
-                        int column
-                ) {
-                    return false;
-                }
-            };
+    private final JTable tabelaDependentes = new JTable(dependentesModelo);
 
-    private final JTable tabelaDependentes =
-            new JTable(dependentesModelo);
+    private final JTextField historicoAno = new JTextField(10);
+    private final JTextField historicoEvento = new JTextField(30);
+    private final JTextField historicoCargo = new JTextField(30);
+    private final JTextArea historicoObservacao = new JTextArea(4, 35);
 
-    private final JTextField historicoAno =
-            new JTextField(10);
+    private final DefaultTableModel historicoModelo = new DefaultTableModel(
+        new String[]{"Ano", "Evento", "Cargo", "Observação"}, 0
+    ) {
+        private static final long serialVersionUID = 1L;
 
-    private final JTextField historicoEvento =
-            new JTextField(30);
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
 
-    private final JTextField historicoCargo =
-            new JTextField(30);
+    private final JTable tabelaHistorico = new JTable(historicoModelo);
 
-    private final JTextArea historicoObservacao =
-            new JTextArea(5, 35);
-
-    private final DefaultTableModel historicoModelo =
-            new DefaultTableModel(
-                    new String[] {
-                            "Ano",
-                            "Evento",
-                            "Cargo",
-                            "Observacao"
-                    },
-                    0
-            ) {
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public boolean isCellEditable(
-                        int row,
-                        int column
-                ) {
-                    return false;
-                }
-            };
-
-    private final JTable tabelaHistorico =
-            new JTable(historicoModelo);
-
-    private final JButton novo =
-            new JButton("Novo");
-
-    private final JButton salvar =
-            new JButton("Salvar funcionário");
-
-    private final JButton excluir =
-            new JButton("Excluir");
-
-    private final JButton limpar =
-            new JButton("Limpar");
+    private final JButton salvar = new JButton("Salvar");
+    private final JButton excluir = new JButton("Excluir");
+    private final JButton limpar = new JButton("Limpar");
 
     private final JButton adicionarDependente =
-            new JButton("Adicionar dependente");
+        new JButton("Adicionar dependente");
 
     private final JButton removerDependente =
-            new JButton("Remover selecionado");
+        new JButton("Remover selecionado");
 
     private final JButton adicionarHistorico =
-            new JButton("Adicionar registro");
+        new JButton("Adicionar registro");
 
     private final JButton removerHistorico =
-            new JButton("Remover selecionado");
+        new JButton("Remover selecionado");
+
+    private final JLabel identificacao =
+        new JLabel("Preencha os dados para iniciar um cadastro.");
 
     private final CadastroFuncionarioController controller;
 
     public TelaCadastroFuncionario() {
-
-        setLayout(
-                new BorderLayout(
-                        10,
-                        10
-                )
-        );
-
+        setLayout(new BorderLayout(0, 0));
         montarTela();
-
-        controller =
-                new CadastroFuncionarioController(
-                        this
-                );
+        controller = new CadastroFuncionarioController(this);
     }
 
     private JFormattedTextField criarCampoData() {
-
         try {
+            MaskFormatter mascara = new MaskFormatter("##/##/####");
+            mascara.setPlaceholderCharacter(' ');
 
-            MaskFormatter mascara =
-                    new MaskFormatter(
-                            "##/##/####"
-                    );
-
-            mascara.setPlaceholderCharacter(
-                    ' '
-            );
-
-            JFormattedTextField campo =
-                    new JFormattedTextField(
-                            mascara
-                    );
-
+            JFormattedTextField campo = new JFormattedTextField(mascara);
             campo.setColumns(10);
 
             return campo;
 
         } catch (ParseException e) {
-
             throw new IllegalStateException(
-                    "Erro ao criar campo de data.",
-                    e
+                "Erro ao criar campo de data.", e
             );
         }
     }
 
     private void montarTela() {
-
         id.setEditable(false);
 
         historicoObservacao.setLineWrap(true);
         historicoObservacao.setWrapStyleWord(true);
 
-        JTabbedPane abas =
-                new JTabbedPane();
+        JTabbedPane abas = new JTabbedPane();
 
-        JPanel telaDados =
-                criarTelaDados();
+        JPanel telaDados = criarTelaDados();
+        JPanel telaComplementos = criarTelaComplementos();
 
-        JPanel telaComplementos =
-                criarTelaComplementos();
+        JScrollPane scrollDados = criarScroll(telaDados);
+        JScrollPane scrollComplementos = criarScroll(telaComplementos);
 
-        JScrollPane scrollDados =
-                criarScroll(
-                        telaDados
-                );
+        abas.addTab("Dados do Funcionário", scrollDados);
+        abas.addTab("Dependentes e Histórico", scrollComplementos);
 
-        JScrollPane scrollComplementos =
-                criarScroll(
-                        telaComplementos
-                );
+        add(criarCabecalho(), BorderLayout.NORTH);
+        add(abas, BorderLayout.CENTER);
+        add(criarPainelAcoes(), BorderLayout.SOUTH);
 
-        abas.addTab(
-                "Dados do Funcionário",
-                scrollDados
-        );
+        habilitarRolagem(telaDados, scrollDados);
+        habilitarRolagem(scrollDados, scrollDados);
 
-        abas.addTab(
-                "Dependentes e Histórico",
-                scrollComplementos
-        );
-
-        add(
-                criarCabecalho(),
-                BorderLayout.NORTH
-        );
-
-        add(
-                abas,
-                BorderLayout.CENTER
-        );
-
-        habilitarRolagem(
-                telaDados,
-                scrollDados
-        );
-
-        habilitarRolagem(
-                scrollDados,
-                scrollDados
-        );
-
-        habilitarRolagem(
-                telaComplementos,
-                scrollComplementos
-        );
-
-        habilitarRolagem(
-                scrollComplementos,
-                scrollComplementos
-        );
+        habilitarRolagem(telaComplementos, scrollComplementos);
+        habilitarRolagem(scrollComplementos, scrollComplementos);
     }
 
-    private JScrollPane criarScroll(
-            JPanel painel
-    ) {
+    private JScrollPane criarScroll(JPanel painel) {
+        JScrollPane scroll = new JScrollPane(painel);
 
-        JScrollPane scroll =
-                new JScrollPane(
-                        painel
-                );
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        scroll.setWheelScrollingEnabled(true);
 
-        scroll.setBorder(null);
-
-        scroll.setWheelScrollingEnabled(
-                true
+        scroll.setHorizontalScrollBarPolicy(
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
 
-        scroll.getVerticalScrollBar()
-                .setUnitIncrement(20);
+        scroll.getVerticalScrollBar().setUnitIncrement(18);
 
         return scroll;
     }
 
     private JPanel criarCabecalho() {
+        JPanel painel = new JPanel();
 
-        JPanel painel =
-                new JPanel(
-                        new BorderLayout()
-                );
-
-        painel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        12,
-                        20,
-                        12,
-                        20
-                )
+        painel.setLayout(
+            new javax.swing.BoxLayout(
+                painel,
+                javax.swing.BoxLayout.Y_AXIS
+            )
         );
 
-        JLabel titulo =
-                new JLabel(
-                        "Gestão de Funcionários"
-                );
+        painel.setBorder(
+            BorderFactory.createEmptyBorder(16, 24, 12, 24)
+        );
 
-        JPanel botoes =
-                new JPanel(
-                        new FlowLayout(
-                                FlowLayout.RIGHT,
-                                8,
-                                0
-                        )
-                );
+        JLabel titulo = new JLabel("Gestão de Funcionários");
 
-        botoes.add(novo);
+        titulo.setFont(
+            titulo.getFont().deriveFont(Font.BOLD, 21f)
+        );
+
+        titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        identificacao.setFont(
+            identificacao.getFont().deriveFont(Font.PLAIN, 12f)
+        );
+
+        identificacao.setBorder(
+            BorderFactory.createEmptyBorder(4, 0, 0, 0)
+        );
+
+        identificacao.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        painel.add(titulo);
+        painel.add(identificacao);
+
+        return painel;
+    }
+
+    private JPanel criarPainelAcoes() {
+        JPanel painel = new JPanel(new BorderLayout());
+
+        painel.setBorder(
+            BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(
+                    1, 0, 0, 0,
+                    UIManager.getColor("Panel.background").darker()
+                ),
+                BorderFactory.createEmptyBorder(8, 20, 8, 20)
+            )
+        );
+
+        Dimension tamanho = new Dimension(85, 28);
+
+        salvar.setPreferredSize(tamanho);
+        excluir.setPreferredSize(tamanho);
+        limpar.setPreferredSize(tamanho);
+
+        JPanel botoes = new JPanel(
+            new FlowLayout(FlowLayout.RIGHT, 6, 0)
+        );
+
         botoes.add(salvar);
         botoes.add(excluir);
         botoes.add(limpar);
 
-        painel.add(
-                titulo,
-                BorderLayout.WEST
-        );
-
-        painel.add(
-                botoes,
-                BorderLayout.EAST
-        );
+        painel.add(botoes, BorderLayout.EAST);
 
         return painel;
     }
 
     private JPanel criarTelaDados() {
+        JPanel painel = criarPainelConteudo();
 
-        JPanel painel =
-                new JPanel(
-                        new GridBagLayout()
-                );
-
-        painel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        25,
-                        40,
-                        40,
-                        40
-                )
+        adicionarSecao(painel, "1. Cadastro de Funcionário",
+            criarCampo("Código", id),
+            criarCampo("Nome completo", nome),
+            criarCampo("Matrícula", matricula),
+            criarCampo("Cargo", cargo),
+            criarCampo("Departamento", departamento),
+            criarCampo("E-mail", email),
+            criarCampo("Telefone", telefone),
+            criarCampo("Status", status)
         );
 
-        adicionarSecao(
-                painel,
-                "1. Cadastro de Funcionário",
-                new Component[] {
-                        criarCampo(
-                                "Código",
-                                id
-                        ),
-                        criarCampo(
-                                "Nome completo",
-                                nome
-                        ),
-                        criarCampo(
-                                "Matrícula",
-                                matricula
-                        ),
-                        criarCampo(
-                                "Cargo",
-                                cargo
-                        ),
-                        criarCampo(
-                                "Departamento",
-                                departamento
-                        ),
-                        criarCampo(
-                                "E-mail",
-                                email
-                        ),
-                        criarCampo(
-                                "Telefone",
-                                telefone
-                        ),
-                        criarCampo(
-                                "Status",
-                                status
-                        )
-                }
+        adicionarSecao(painel, "2. Dados Pessoais",
+            criarCampo("Nascimento", nascimento),
+            criarCampo("Estado civil", estadoCivil),
+            criarCampo("Naturalidade", naturalidade),
+            criarCampo("Nacionalidade", nacionalidade),
+            criarCampo("Endereço", endereco),
+            criarCampo("Cidade", cidade)
         );
 
-        adicionarSecao(
-                painel,
-                "2. Dados Pessoais",
-                new Component[] {
-                        criarCampo(
-                                "Nascimento",
-                                nascimento
-                        ),
-                        criarCampo(
-                                "Estado civil",
-                                estadoCivil
-                        ),
-                        criarCampo(
-                                "Naturalidade",
-                                naturalidade
-                        ),
-                        criarCampo(
-                                "Nacionalidade",
-                                nacionalidade
-                        ),
-                        criarCampo(
-                                "Endereço",
-                                endereco
-                        ),
-                        criarCampo(
-                                "Cidade",
-                                cidade
-                        )
-                }
+        adicionarSecao(painel, "3. Dados Bancários",
+            criarCampo("Banco", banco),
+            criarCampo("Código do banco", codigoBanco),
+            criarCampo("Agência", agencia),
+            criarCampo("Conta", conta),
+            criarCampo("Tipo de conta", tipoConta),
+            criarCampo("PIX", pix)
         );
 
-        adicionarSecao(
-                painel,
-                "3. Dados Bancários",
-                new Component[] {
-                        criarCampo(
-                                "Banco",
-                                banco
-                        ),
-                        criarCampo(
-                                "Código do banco",
-                                codigoBanco
-                        ),
-                        criarCampo(
-                                "Agência",
-                                agencia
-                        ),
-                        criarCampo(
-                                "Conta",
-                                conta
-                        ),
-                        criarCampo(
-                                "Tipo de conta",
-                                tipoConta
-                        ),
-                        criarCampo(
-                                "PIX",
-                                pix
-                        )
-                }
+        adicionarSecao(painel, "4. Documentos",
+            criarCampo("CPF", cpf),
+            criarCampo("RG", rg),
+            criarCampo("Passaporte", passaporte),
+            criarCampo("Validade do passaporte", validadePassaporte),
+            criarCampo("PIS", pis),
+            criarCampo("CTPS", ctps)
         );
 
-        adicionarSecao(
-                painel,
-                "4. Documentos",
-                new Component[] {
-                        criarCampo(
-                                "CPF",
-                                cpf
-                        ),
-                        criarCampo(
-                                "RG",
-                                rg
-                        ),
-                        criarCampo(
-                                "Passaporte",
-                                passaporte
-                        ),
-                        criarCampo(
-                                "Validade do passaporte",
-                                validadePassaporte
-                        ),
-                        criarCampo(
-                                "PIS",
-                                pis
-                        ),
-                        criarCampo(
-                                "CTPS",
-                                ctps
-                        )
-                }
-        );
+        adicionarEspacoFlexivel(painel);
 
         return painel;
     }
 
     private JPanel criarTelaComplementos() {
+        JPanel painel = criarPainelConteudo();
 
-        JPanel painel =
-                new JPanel(
-                        new GridBagLayout()
-                );
+        adicionarSecao(painel, "5. Dependentes",
+            criarCampo("Nome", dependenteNome),
+            criarCampo("Parentesco", dependenteParentesco),
+            criarCampo("Nascimento", dependenteNascimento),
+            criarCampo("Assistência", dependenteAssistencia)
+        );
+
+        adicionarTabela(
+            painel,
+            tabelaDependentes,
+            adicionarDependente,
+            removerDependente
+        );
+
+        adicionarSecao(painel, "6. Histórico",
+            criarCampo("Ano", historicoAno),
+            criarCampo("Evento", historicoEvento),
+            criarCampo("Cargo", historicoCargo),
+            criarCampo(
+                "Observação",
+                new JScrollPane(historicoObservacao)
+            )
+        );
+
+        adicionarTabela(
+            painel,
+            tabelaHistorico,
+            adicionarHistorico,
+            removerHistorico
+        );
+
+        adicionarEspacoFlexivel(painel);
+
+        return painel;
+    }
+
+    private JPanel criarPainelConteudo() {
+        JPanel painel = new JPanel(new GridBagLayout());
 
         painel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        25,
-                        40,
-                        40,
-                        40
-                )
-        );
-
-        adicionarSecao(
-                painel,
-                "5. Dependentes",
-                new Component[] {
-                        criarCampo(
-                                "Nome",
-                                dependenteNome
-                        ),
-                        criarCampo(
-                                "Parentesco",
-                                dependenteParentesco
-                        ),
-                        criarCampo(
-                                "Nascimento",
-                                dependenteNascimento
-                        ),
-                        criarCampo(
-                                "Assistência",
-                                dependenteAssistencia
-                        )
-                }
-        );
-
-        adicionarDependentesTabela(
-                painel
-        );
-
-        adicionarSecao(
-                painel,
-                "6. Histórico",
-                new Component[] {
-                        criarCampo(
-                                "Ano",
-                                historicoAno
-                        ),
-                        criarCampo(
-                                "Evento",
-                                historicoEvento
-                        ),
-                        criarCampo(
-                                "Cargo",
-                                historicoCargo
-                        ),
-                        criarCampo(
-                                "Observação",
-                                new JScrollPane(
-                                        historicoObservacao
-                                )
-                        )
-                }
-        );
-
-        adicionarHistoricoTabela(
-                painel
+            BorderFactory.createEmptyBorder(20, 30, 22, 30)
         );
 
         return painel;
     }
 
-    private JPanel criarCampo(
-            String texto,
-            Component campo
-    ) {
+    private JPanel criarCampo(String texto, Component campo) {
+        JPanel linha = new JPanel(new BorderLayout(12, 0));
 
-        JPanel painel =
-                new JPanel(
-                        new BorderLayout(
-                                0,
-                                6
-                        )
-                );
-
-        painel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        0,
-                        0,
-                        15,
-                        0
-                )
+        linha.setBorder(
+            BorderFactory.createEmptyBorder(1, 0, 3, 0)
         );
 
-        painel.add(
-                new JLabel(texto),
-                BorderLayout.NORTH
+        JLabel rotulo = new JLabel(texto);
+
+        rotulo.setPreferredSize(
+            new Dimension(LARGURA_ROTULO, 28)
         );
 
-        painel.add(
-                campo,
-                BorderLayout.CENTER
+        rotulo.setMinimumSize(
+            new Dimension(LARGURA_ROTULO, 28)
         );
 
-        return painel;
+        rotulo.setVerticalAlignment(SwingConstants.CENTER);
+
+        linha.add(rotulo, BorderLayout.WEST);
+        linha.add(campo, BorderLayout.CENTER);
+
+        linha.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        return linha;
     }
 
     private void adicionarSecao(
-            JPanel painel,
-            String titulo,
-            Component[] campos
+        JPanel painel,
+        String titulo,
+        Component... campos
     ) {
+        JLabel rotuloTitulo = new JLabel(titulo);
 
-        GridBagConstraints tituloGbc =
-                new GridBagConstraints();
-
-        tituloGbc.gridx = 0;
-        tituloGbc.gridy =
-                painel.getComponentCount();
-
-        tituloGbc.weightx = 1;
-        tituloGbc.fill =
-                GridBagConstraints.HORIZONTAL;
-        tituloGbc.anchor =
-                GridBagConstraints.WEST;
-
-        tituloGbc.insets =
-                new Insets(
-                        5,
-                        0,
-                        8,
-                        0
-                );
-
-        painel.add(
-                new JLabel(titulo),
-                tituloGbc
+        rotuloTitulo.setFont(
+            rotuloTitulo.getFont().deriveFont(Font.BOLD, 15f)
         );
 
-        GridBagConstraints separadorGbc =
-                new GridBagConstraints();
-
-        separadorGbc.gridx = 0;
-        separadorGbc.gridy =
-                painel.getComponentCount();
-
-        separadorGbc.weightx = 1;
-        separadorGbc.fill =
-                GridBagConstraints.HORIZONTAL;
-
-        separadorGbc.insets =
-                new Insets(
-                        0,
-                        0,
-                        20,
-                        0
-                );
-
-        painel.add(
-                new JSeparator(),
-                separadorGbc
+        adicionarComponente(
+            painel, rotuloTitulo, 0,
+            new Insets(7, 0, 7, 0), 0, 0
         );
 
-        for (
-                Component campo :
-                campos
-        ) {
+        adicionarComponente(
+            painel, new JSeparator(), 0,
+            new Insets(0, 0, 8, 0), 0, 0
+        );
 
-            GridBagConstraints campoGbc =
-                    new GridBagConstraints();
-
-            campoGbc.gridx = 0;
-            campoGbc.gridy =
-                    painel.getComponentCount();
-
-            campoGbc.weightx = 1;
-
-            campoGbc.fill =
-                    GridBagConstraints.HORIZONTAL;
-
-            campoGbc.anchor =
-                    GridBagConstraints.WEST;
-
-            campoGbc.insets =
-                    new Insets(
-                            0,
-                            0,
-                            8,
-                            0
-                    );
-
-            painel.add(
-                    campo,
-                    campoGbc
+        for (Component campo : campos) {
+            adicionarComponente(
+                painel, campo, 0,
+                new Insets(0, 0, 2, 0), 0, 0
             );
         }
 
-        JPanel espaco =
-                new JPanel();
+        JPanel espaco = new JPanel();
+        espaco.setOpaque(false);
 
-        GridBagConstraints espacoGbc =
-                new GridBagConstraints();
-
-        espacoGbc.gridx = 0;
-        espacoGbc.gridy =
-                painel.getComponentCount();
-
-        espacoGbc.weightx = 1;
-        espacoGbc.fill =
-                GridBagConstraints.HORIZONTAL;
-
-        espacoGbc.insets =
-                new Insets(
-                        0,
-                        0,
-                        20,
-                        0
-                );
-
-        painel.add(
-                espaco,
-                espacoGbc
+        adicionarComponente(
+            painel, espaco, 0,
+            new Insets(0, 0, 14, 0), 0, 0
         );
     }
 
-    private void adicionarDependentesTabela(
-            JPanel painel
+    private void adicionarComponente(
+        JPanel painel,
+        Component componente,
+        int coluna,
+        Insets insets,
+        double pesoY,
+        int preenchimento
     ) {
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        JPanel botoes =
-                new JPanel(
-                        new FlowLayout(
-                                FlowLayout.LEFT,
-                                8,
-                                5
-                        )
-                );
+        gbc.gridx = coluna;
+        gbc.gridy = painel.getComponentCount();
+        gbc.weightx = 1;
+        gbc.weighty = pesoY;
 
-        botoes.add(
-                adicionarDependente
-        );
+        gbc.fill = preenchimento == 0
+            ? GridBagConstraints.HORIZONTAL
+            : GridBagConstraints.BOTH;
 
-        botoes.add(
-                removerDependente
-        );
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = insets;
+        gbc.gridwidth = 1;
 
-        GridBagConstraints botoesGbc =
-                new GridBagConstraints();
-
-        botoesGbc.gridx = 0;
-        botoesGbc.gridy =
-                painel.getComponentCount();
-
-        botoesGbc.weightx = 1;
-
-        botoesGbc.fill =
-                GridBagConstraints.HORIZONTAL;
-
-        botoesGbc.anchor =
-                GridBagConstraints.WEST;
-
-        botoesGbc.insets =
-                new Insets(
-                        0,
-                        0,
-                        12,
-                        0
-                );
-
-        painel.add(
-                botoes,
-                botoesGbc
-        );
-
-        tabelaDependentes
-                .setFillsViewportHeight(
-                        true
-                );
-
-        tabelaDependentes
-                .setRowHeight(24);
-
-        JScrollPane scroll =
-                new JScrollPane(
-                        tabelaDependentes
-                );
-
-        GridBagConstraints tabelaGbc =
-                new GridBagConstraints();
-
-        tabelaGbc.gridx = 0;
-        tabelaGbc.gridy =
-                painel.getComponentCount();
-
-        tabelaGbc.weightx = 1;
-
-        tabelaGbc.weighty = 1;
-
-        tabelaGbc.fill =
-                GridBagConstraints.BOTH;
-
-        tabelaGbc.insets =
-                new Insets(
-                        0,
-                        0,
-                        30,
-                        0
-                );
-
-        painel.add(
-                scroll,
-                tabelaGbc
-        );
+        painel.add(componente, gbc);
     }
 
-    private void adicionarHistoricoTabela(
-            JPanel painel
+    private void adicionarEspacoFlexivel(JPanel painel) {
+        JPanel espaco = new JPanel();
+        espaco.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.gridx = 0;
+        gbc.gridy = painel.getComponentCount();
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+
+        painel.add(espaco, gbc);
+    }
+
+    private void adicionarTabela(
+        JPanel painel,
+        JTable tabela,
+        JButton adicionar,
+        JButton remover
     ) {
-
-        JPanel botoes =
-                new JPanel(
-                        new FlowLayout(
-                                FlowLayout.LEFT,
-                                8,
-                                5
-                        )
-                );
-
-        botoes.add(
-                adicionarHistorico
+        JPanel botoes = new JPanel(
+            new FlowLayout(FlowLayout.LEFT, 8, 2)
         );
 
-        botoes.add(
-                removerHistorico
+        botoes.add(adicionar);
+        botoes.add(remover);
+
+        adicionarComponente(
+            painel, botoes, 0,
+            new Insets(0, 0, 7, 0), 0, 0
         );
 
-        GridBagConstraints botoesGbc =
-                new GridBagConstraints();
+        tabela.setFillsViewportHeight(true);
+        tabela.setRowHeight(24);
+        tabela.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-        botoesGbc.gridx = 0;
-        botoesGbc.gridy =
-                painel.getComponentCount();
+        JScrollPane scroll = new JScrollPane(tabela);
+        scroll.setPreferredSize(new Dimension(500, 135));
 
-        botoesGbc.weightx = 1;
-
-        botoesGbc.fill =
-                GridBagConstraints.HORIZONTAL;
-
-        botoesGbc.anchor =
-                GridBagConstraints.WEST;
-
-        botoesGbc.insets =
-                new Insets(
-                        0,
-                        0,
-                        12,
-                        0
-                );
-
-        painel.add(
-                botoes,
-                botoesGbc
-        );
-
-        tabelaHistorico
-                .setFillsViewportHeight(
-                        true
-                );
-
-        tabelaHistorico
-                .setRowHeight(24);
-
-        JScrollPane scroll =
-                new JScrollPane(
-                        tabelaHistorico
-                );
-
-        GridBagConstraints tabelaGbc =
-                new GridBagConstraints();
-
-        tabelaGbc.gridx = 0;
-        tabelaGbc.gridy =
-                painel.getComponentCount();
-
-        tabelaGbc.weightx = 1;
-
-        tabelaGbc.weighty = 1;
-
-        tabelaGbc.fill =
-                GridBagConstraints.BOTH;
-
-        tabelaGbc.insets =
-                new Insets(
-                        0,
-                        0,
-                        20,
-                        0
-                );
-
-        painel.add(
-                scroll,
-                tabelaGbc
+        adicionarComponente(
+            painel, scroll, 0,
+            new Insets(0, 0, 17, 0), 0, 1
         );
     }
 
     private void habilitarRolagem(
-            Component componente,
-            JScrollPane scrollPrincipal
+        Component componente,
+        JScrollPane scrollPrincipal
     ) {
+        MouseWheelListener listener = e -> {
+            JScrollBar barra = scrollPrincipal.getVerticalScrollBar();
 
-        MouseWheelListener listener =
-                e -> {
+            if (!barra.isVisible()) {
+                return;
+            }
 
-                    JScrollBar barra =
-                            scrollPrincipal
-                                    .getVerticalScrollBar();
+            int movimento =
+                e.getWheelRotation() * barra.getUnitIncrement() * 2;
 
-                    if (!barra.isVisible()) {
-                        return;
-                    }
+            int maximo =
+                barra.getMaximum() - barra.getVisibleAmount();
 
-                    int movimento =
-                            e.getWheelRotation()
-                                    *
-                            barra.getUnitIncrement()
-                                    *
-                            2;
+            int novoValor = Math.max(
+                barra.getMinimum(),
+                Math.min(barra.getValue() + movimento, maximo)
+            );
 
-                    int novoValor =
-                            barra.getValue()
-                                    +
-                            movimento;
+            barra.setValue(novoValor);
+            e.consume();
+        };
 
-                    int maximo =
-                            barra.getMaximum()
-                                    -
-                            barra.getVisibleAmount();
+        componente.addMouseWheelListener(listener);
 
-                    novoValor =
-                            Math.max(
-                                    barra.getMinimum(),
-                                    Math.min(
-                                            novoValor,
-                                            maximo
-                                    )
-                            );
-
-                    barra.setValue(
-                            novoValor
-                    );
-
-                    e.consume();
-                };
-
-        componente.addMouseWheelListener(
-                listener
-        );
-
-        if (
-                componente instanceof Container
-        ) {
-
-            Container container =
-                    (Container) componente;
-
-            for (
-                    Component filho :
-                    container.getComponents()
-            ) {
-
-                habilitarRolagem(
-                        filho,
-                        scrollPrincipal
-                );
+        if (componente instanceof Container) {
+            for (Component filho : ((Container) componente).getComponents()) {
+                habilitarRolagem(filho, scrollPrincipal);
             }
         }
     }
 
     public void adicionarDependenteNaTabela() {
+        String nomeDependente = texto(dependenteNome);
 
-        String nomeDependente =
-                texto(
-                        dependenteNome
-                );
-
-        if (
-                nomeDependente.isEmpty()
-        ) {
-
+        if (nomeDependente.isEmpty()) {
             throw new IllegalArgumentException(
-                    "Informe o nome do dependente."
+                "Informe o nome do dependente."
             );
         }
 
-        dependentesModelo.addRow(
-                new Object[] {
-                        nomeDependente,
-                        dependenteParentesco
-                                .getSelectedItem(),
-                        textoData(
-                                dependenteNascimento
-                        ),
-                        texto(
-                                dependenteAssistencia
-                        )
-                }
-        );
+        dependentesModelo.addRow(new Object[]{
+            nomeDependente,
+            dependenteParentesco.getSelectedItem(),
+            textoData(dependenteNascimento),
+            texto(dependenteAssistencia)
+        });
 
         limparDependente();
     }
 
     public void removerDependenteSelecionado() {
-
-        int linha =
-                tabelaDependentes
-                        .getSelectedRow();
+        int linha = tabelaDependentes.getSelectedRow();
 
         if (linha >= 0) {
-
-            dependentesModelo
-                    .removeRow(linha);
+            dependentesModelo.removeRow(
+                tabelaDependentes.convertRowIndexToModel(linha)
+            );
         }
     }
 
     public void adicionarHistoricoNaTabela() {
-
-        if (
-                texto(historicoAno).isEmpty()
-                        &&
-                texto(historicoEvento).isEmpty()
-                        &&
-                texto(historicoCargo).isEmpty()
-                        &&
-                texto(historicoObservacao).isEmpty()
-        ) {
-
+        if (texto(historicoAno).isEmpty()
+                && texto(historicoEvento).isEmpty()
+                && texto(historicoCargo).isEmpty()
+                && texto(historicoObservacao).isEmpty()) {
             throw new IllegalArgumentException(
-                    "Informe pelo menos um dado do histórico."
+                "Informe pelo menos um dado do histórico."
             );
         }
 
-        historicoModelo.addRow(
-                new Object[] {
-                        texto(historicoAno),
-                        texto(historicoEvento),
-                        texto(historicoCargo),
-                        texto(historicoObservacao)
-                }
-        );
+        historicoModelo.addRow(new Object[]{
+            texto(historicoAno),
+            texto(historicoEvento),
+            texto(historicoCargo),
+            texto(historicoObservacao)
+        });
 
         limparHistorico();
     }
 
     public void removerHistoricoSelecionado() {
-
-        int linha =
-                tabelaHistorico
-                        .getSelectedRow();
+        int linha = tabelaHistorico.getSelectedRow();
 
         if (linha >= 0) {
-
-            historicoModelo
-                    .removeRow(linha);
+            historicoModelo.removeRow(
+                tabelaHistorico.convertRowIndexToModel(linha)
+            );
         }
     }
 
     private void limparDependente() {
-
         dependenteNome.setText("");
-
-        dependenteParentesco
-                .setSelectedIndex(0);
-
-        dependenteNascimento
-                .setValue(null);
-
-        dependenteAssistencia
-                .setText("");
+        dependenteParentesco.setSelectedIndex(0);
+        dependenteNascimento.setValue(null);
+        dependenteAssistencia.setText("");
     }
 
     private void limparHistorico() {
-
         historicoAno.setText("");
-
         historicoEvento.setText("");
-
         historicoCargo.setText("");
-
-        historicoObservacao
-                .setText("");
+        historicoObservacao.setText("");
     }
 
     public void limparFormulario() {
-
         id.setText("");
-
         nome.setText("");
-
         matricula.setText("");
-
         cargo.setText("");
-
         departamento.setText("");
-
         email.setText("");
-
         telefone.setText("");
-
         status.setSelectedIndex(0);
 
         nascimento.setValue(null);
-
         estadoCivil.setSelectedIndex(0);
-
         naturalidade.setText("");
-
         nacionalidade.setSelectedIndex(0);
-
         endereco.setText("");
-
         cidade.setText("");
 
         banco.setText("");
-
         codigoBanco.setText("");
-
         agencia.setText("");
-
         conta.setText("");
-
         tipoConta.setSelectedIndex(0);
-
         pix.setText("");
 
         cpf.setText("");
-
         rg.setText("");
-
         passaporte.setText("");
-
-        validadePassaporte
-                .setValue(null);
-
+        validadePassaporte.setValue(null);
         pis.setText("");
-
         ctps.setText("");
 
-        dependentesModelo
-                .setRowCount(0);
-
-        historicoModelo
-                .setRowCount(0);
+        dependentesModelo.setRowCount(0);
+        historicoModelo.setRowCount(0);
 
         limparDependente();
-
         limparHistorico();
+
+        identificacao.setText(
+            "Preencha os dados para iniciar um cadastro."
+        );
     }
 
     public List<String[]> obterDependentes() {
+        List<String[]> dados = new ArrayList<>();
 
-        List<String[]> dados =
-                new ArrayList<>();
-
-        for (
-                int i = 0;
-                i < dependentesModelo.getRowCount();
-                i++
-        ) {
-
-            dados.add(
-                    new String[] {
-                            valor(
-                                    dependentesModelo,
-                                    i,
-                                    0
-                            ),
-                            valor(
-                                    dependentesModelo,
-                                    i,
-                                    1
-                            ),
-                            valor(
-                                    dependentesModelo,
-                                    i,
-                                    2
-                            ),
-                            valor(
-                                    dependentesModelo,
-                                    i,
-                                    3
-                            )
-                    }
-            );
+        for (int i = 0; i < dependentesModelo.getRowCount(); i++) {
+            dados.add(new String[]{
+                valor(dependentesModelo, i, 0),
+                valor(dependentesModelo, i, 1),
+                valor(dependentesModelo, i, 2),
+                valor(dependentesModelo, i, 3)
+            });
         }
 
         return dados;
     }
 
     public List<String[]> obterHistorico() {
+        List<String[]> dados = new ArrayList<>();
 
-        List<String[]> dados =
-                new ArrayList<>();
-
-        for (
-                int i = 0;
-                i < historicoModelo.getRowCount();
-                i++
-        ) {
-
-            dados.add(
-                    new String[] {
-                            valor(
-                                    historicoModelo,
-                                    i,
-                                    0
-                            ),
-                            valor(
-                                    historicoModelo,
-                                    i,
-                                    1
-                            ),
-                            valor(
-                                    historicoModelo,
-                                    i,
-                                    2
-                            ),
-                            valor(
-                                    historicoModelo,
-                                    i,
-                                    3
-                            )
-                    }
-            );
+        for (int i = 0; i < historicoModelo.getRowCount(); i++) {
+            dados.add(new String[]{
+                valor(historicoModelo, i, 0),
+                valor(historicoModelo, i, 1),
+                valor(historicoModelo, i, 2),
+                valor(historicoModelo, i, 3)
+            });
         }
 
         return dados;
     }
 
     private String valor(
-            DefaultTableModel modelo,
-            int linha,
-            int coluna
+        DefaultTableModel modelo,
+        int linha,
+        int coluna
     ) {
-
-        Object valor =
-                modelo.getValueAt(
-                        linha,
-                        coluna
-                );
-
-        return valor == null
-                ? ""
-                : valor.toString();
+        Object valor = modelo.getValueAt(linha, coluna);
+        return valor == null ? "" : valor.toString();
     }
 
-    private String texto(
-            JTextField campo
-    ) {
-
-        return campo
-                .getText()
-                .trim();
+    private String texto(JTextField campo) {
+        return campo.getText().trim();
     }
 
-    private String texto(
-            JTextArea campo
-    ) {
-
-        return campo
-                .getText()
-                .trim();
+    private String texto(JTextArea campo) {
+        return campo.getText().trim();
     }
 
-    private String textoData(
-            JTextField campo
-    ) {
+    private String textoData(JTextField campo) {
+        String valor = campo.getText();
+        String numeros = valor.replaceAll("\\D", "");
 
-        String valor =
-                campo.getText();
-
-        String numeros =
-                valor.replaceAll(
-                        "\\D",
-                        ""
-                );
-
-        if (
-                numeros.length() != 8
-        ) {
-
-            return "";
-        }
-
-        return valor.trim();
+        return numeros.length() == 8 ? valor.trim() : "";
     }
 
     public int getId() {
-
-        return id.getText().isEmpty()
-                ? 0
-                : Integer.parseInt(
-                        id.getText()
-                );
+        return id.getText().trim().isEmpty()
+            ? 0
+            : Integer.parseInt(id.getText().trim());
     }
 
-    public void setId(
-            int valor
-    ) {
-
-        id.setText(
-                String.valueOf(valor)
-        );
+    public void setId(int valor) {
+        id.setText(String.valueOf(valor));
     }
 
     public String getNome() {
@@ -1418,21 +756,15 @@ public class TelaCadastroFuncionario extends JPanel {
     }
 
     public String getStatus() {
-        return String.valueOf(
-                status.getSelectedItem()
-        );
+        return String.valueOf(status.getSelectedItem());
     }
 
     public String getNascimento() {
-        return textoData(
-                nascimento
-        );
+        return textoData(nascimento);
     }
 
     public String getEstadoCivil() {
-        return String.valueOf(
-                estadoCivil.getSelectedItem()
-        );
+        return String.valueOf(estadoCivil.getSelectedItem());
     }
 
     public String getNaturalidade() {
@@ -1440,9 +772,7 @@ public class TelaCadastroFuncionario extends JPanel {
     }
 
     public String getNacionalidade() {
-        return String.valueOf(
-                nacionalidade.getSelectedItem()
-        );
+        return String.valueOf(nacionalidade.getSelectedItem());
     }
 
     public String getEndereco() {
@@ -1470,9 +800,7 @@ public class TelaCadastroFuncionario extends JPanel {
     }
 
     public String getTipoConta() {
-        return String.valueOf(
-                tipoConta.getSelectedItem()
-        );
+        return String.valueOf(tipoConta.getSelectedItem());
     }
 
     public String getPix() {
@@ -1492,9 +820,7 @@ public class TelaCadastroFuncionario extends JPanel {
     }
 
     public String getValidadePassaporte() {
-        return textoData(
-                validadePassaporte
-        );
+        return textoData(validadePassaporte);
     }
 
     public String getPis() {
@@ -1503,10 +829,6 @@ public class TelaCadastroFuncionario extends JPanel {
 
     public String getCtps() {
         return texto(ctps);
-    }
-
-    public JButton getNovo() {
-        return novo;
     }
 
     public JButton getSalvar() {
@@ -1519,6 +841,95 @@ public class TelaCadastroFuncionario extends JPanel {
 
     public JButton getLimpar() {
         return limpar;
+    }
+
+    public void carregarFuncionario(CadastroFuncionario funcionario) {
+        if (funcionario == null) {
+            throw new IllegalArgumentException(
+                "Funcionário não informado."
+            );
+        }
+
+        limparFormulario();
+
+        setId(funcionario.getId());
+        nome.setText(valorSeguro(funcionario.getNome()));
+        matricula.setText(valorSeguro(funcionario.getMatricula()));
+        cargo.setText(valorSeguro(funcionario.getCargo()));
+        departamento.setText(valorSeguro(funcionario.getDepartamento()));
+        email.setText(valorSeguro(funcionario.getEmail()));
+        telefone.setText(valorSeguro(funcionario.getTelefone()));
+        selecionarCombo(status, funcionario.getStatus());
+
+        if (funcionario.getDadosPessoais() != null) {
+            model.DadosPessoais dados = funcionario.getDadosPessoais();
+
+            setCampoData(nascimento, dados.getNascimento());
+            selecionarCombo(estadoCivil, dados.getEstadoCivil());
+            naturalidade.setText(valorSeguro(dados.getNaturalidade()));
+            selecionarCombo(nacionalidade, dados.getNacionalidade());
+            endereco.setText(valorSeguro(dados.getEndereco()));
+            cidade.setText(valorSeguro(dados.getCidade()));
+        }
+
+        if (funcionario.getDadosBancarios() != null) {
+            model.DadosBancarios dados = funcionario.getDadosBancarios();
+
+            banco.setText(valorSeguro(dados.getBanco()));
+            codigoBanco.setText(valorSeguro(dados.getCodigoBanco()));
+            agencia.setText(valorSeguro(dados.getAgencia()));
+            conta.setText(valorSeguro(dados.getConta()));
+            selecionarCombo(tipoConta, dados.getTipoConta());
+            pix.setText(valorSeguro(dados.getPix()));
+        }
+
+        if (funcionario.getDocumentos() != null) {
+            model.Documentos dados = funcionario.getDocumentos();
+
+            cpf.setText(valorSeguro(dados.getCpf()));
+            rg.setText(valorSeguro(dados.getRg()));
+            passaporte.setText(valorSeguro(dados.getPassaporte()));
+            setCampoData(validadePassaporte, dados.getValidadePassaporte());
+            pis.setText(valorSeguro(dados.getPis()));
+            ctps.setText(valorSeguro(dados.getCtps()));
+        }
+
+        for (Dependentes dependente : funcionario.getDependentes()) {
+            dependentesModelo.addRow(new Object[]{
+                valorSeguro(dependente.getNome()),
+                valorSeguro(dependente.getParentesco()),
+                valorSeguro(dependente.getNascimento()),
+                valorSeguro(dependente.getAssistencia())
+            });
+        }
+
+        for (Historico registro : funcionario.getHistorico()) {
+            historicoModelo.addRow(new Object[]{
+                valorSeguro(registro.getAno()),
+                valorSeguro(registro.getEvento()),
+                valorSeguro(registro.getCargo()),
+                valorSeguro(registro.getObservacao())
+            });
+        }
+
+        setIdentificacao(
+            "Funcionário: " + valorSeguro(funcionario.getNome())
+            + " — código " + funcionario.getId()
+        );
+    }
+
+    private void selecionarCombo(JComboBox<String> combo, String valor) {
+        if (valor != null && !valor.trim().isEmpty()) {
+            combo.setSelectedItem(valor);
+        }
+    }
+
+    private void setCampoData(JFormattedTextField campo, String valor) {
+        campo.setText(valorSeguro(valor));
+    }
+
+    private String valorSeguro(String valor) {
+        return valor == null ? "" : valor;
     }
 
     public JButton getAdicionarDependente() {
@@ -1537,8 +948,11 @@ public class TelaCadastroFuncionario extends JPanel {
         return removerHistorico;
     }
 
-    public void setIdentificacao(
-            String texto
-    ) {
+    public void setIdentificacao(String texto) {
+        identificacao.setText(texto == null ? "" : texto);
+    }
+
+    public CadastroFuncionarioController getController() {
+        return controller;
     }
 }

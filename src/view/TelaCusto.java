@@ -6,9 +6,7 @@ import javax.swing.border.EmptyBorder;
 
 public class TelaCusto extends JPanel {
 
-	private static final long serialVersionUID = 1L;
-
-	public TelaCusto() {
+    public TelaCusto() {
         setLayout(new BorderLayout(10, 15));
         setBorder(new EmptyBorder(20, 20, 20, 20));
         setBackground(new Color(245, 246, 248));

@@ -29,7 +29,7 @@ public class TelaContratacao extends JPanel {
     private void montar() {
         JPanel formulario = new JPanel(new GridBagLayout());
         formulario.setBorder(
-            BorderFactory.createTitledBorder("Cadastro de Vaga")
+            BorderFactory.createTitledBorder("Contratação")
         );
 
         GridBagConstraints g = new GridBagConstraints();

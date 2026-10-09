@@ -1,3 +1,4 @@
+
 package model;
 
 import java.util.ArrayList;
@@ -18,24 +19,22 @@ public class CadastroFuncionario {
     private DadosBancarios dadosBancarios;
     private Documentos documentos;
 
-    private List<Dependentes> dependentes;
-    private List<Historico> historico;
+    private final List<Dependentes> dependentes = new ArrayList<>();
+    private final List<Historico> historico = new ArrayList<>();
 
     public CadastroFuncionario() {
-        dependentes = new ArrayList<>();
-        historico = new ArrayList<>();
     }
 
     public CadastroFuncionario(
-        int id,
-        String nome,
-        String matricula,
-        String cargo,
-        String departamento,
-        String email,
-        String telefone,
-        String status
-    ) {
+            int id,
+            String nome,
+            String matricula,
+            String cargo,
+            String departamento,
+            String email,
+            String telefone,
+            String status) {
+
         this.id = id;
         this.nome = nome;
         this.matricula = matricula;
@@ -44,9 +43,6 @@ public class CadastroFuncionario {
         this.email = email;
         this.telefone = telefone;
         this.status = status;
-
-        dependentes = new ArrayList<>();
-        historico = new ArrayList<>();
     }
 
     public int getId() {
@@ -137,27 +133,39 @@ public class CadastroFuncionario {
         this.documentos = documentos;
     }
 
+    public void adicionarDependente(Dependentes dependente) {
+        if (dependente != null) {
+            dependentes.add(dependente);
+        }
+    }
+
     public List<Dependentes> getDependentes() {
-        return dependentes;
+        return new ArrayList<>(dependentes);
     }
 
     public void setDependentes(List<Dependentes> dependentes) {
-        this.dependentes = dependentes;
-    }
+        this.dependentes.clear();
 
-    public void adicionarDependente(Dependentes dependente) {
-        dependentes.add(dependente);
-    }
-
-    public List<Historico> getHistorico() {
-        return historico;
-    }
-
-    public void setHistorico(List<Historico> historico) {
-        this.historico = historico;
+        if (dependentes != null) {
+            this.dependentes.addAll(dependentes);
+        }
     }
 
     public void adicionarHistorico(Historico registro) {
-        historico.add(registro);
+        if (registro != null) {
+            historico.add(registro);
+        }
+    }
+
+    public List<Historico> getHistorico() {
+        return new ArrayList<>(historico);
+    }
+
+    public void setHistorico(List<Historico> historico) {
+        this.historico.clear();
+
+        if (historico != null) {
+            this.historico.addAll(historico);
+        }
     }
 }
